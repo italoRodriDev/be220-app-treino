@@ -5,14 +5,13 @@
 export const environment = {
   production: false,
   firebaseConfig: {
-    apiKey: 'AIzaSyDSMt1reCvesqOEPOljm8Yr03fdOruqt3Q',
-    authDomain: 'cyber-pump.firebaseapp.com',
-    databaseURL: 'https://cyber-pump-default-rtdb.firebaseio.com',
-    projectId: 'cyber-pump',
-    storageBucket: 'cyber-pump.appspot.com',
-    messagingSenderId: '887949756740',
-    appId: '1:887949756740:web:afe8a8e38f010fb9b9af11',
-    measurementId: 'G-FTEMGX973R',
+    apiKey: 'AIzaSyBros9UaYaUYYCM68Wezq-CweN6A5b1RqM',
+    authDomain: 'app-treinos.firebaseapp.com',
+    projectId: 'app-treinos',
+    storageBucket: 'app-treinos.appspot.com',
+    messagingSenderId: '885942209881',
+    appId: '1:885942209881:web:e9a9d703221ea64d639048',
+    measurementId: 'G-PP48LQGPB6',
   },
 };
 

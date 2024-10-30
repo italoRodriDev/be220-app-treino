@@ -1,17 +1,11 @@
-<ion-header mode="md">
-  <ion-toolbar color="secondary">
-    <ion-buttons>
-      <ion-title>
-        <img class="logo" src="assets/images/logo.png" />
-      </ion-title>
-      <ion-button (click)="onClickExit()">
-        <ion-icon slot="icon-only" name="exit-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content mode="md">
+  <div class="toolbar">
+    <ion-row>
+      <ion-avatar>
+        <img [lazyLoad]="'https://i.pinimg.com/originals/91/07/5f/91075fee1e72a27639b0eea74bd056be.jpg'">
+      </ion-avatar>
+    </ion-row>
+  </div>
   <section *ngIf="professor">
     <ion-card mode="ios">
       <ion-card-content>
@@ -49,7 +43,7 @@
           <ion-item slot="header">
             <ion-label>
               <p>
-                <ion-title color="dark" style="padding-left: 0"
+                <ion-title color="light" style="padding-left: 0"
                   >{{ (item.nome.length > 35 ? item.nome.substring(0, 35)+ '...'
                   : item.nome) }}</ion-title
                 >
@@ -80,7 +74,7 @@
   <app-animation-list *ngIf="listAlunos.length"></app-animation-list>
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
     <ion-fab-button (click)="onClickNew()">
-      <ion-icon name="person-add-outline"></ion-icon>
+      <ion-icon name="person-add-outline" color="light"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

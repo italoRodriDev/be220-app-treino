@@ -14,7 +14,6 @@ import { AlertController, NavController } from '@ionic/angular';
 export class CadastroAlunoService {
   formAluno: FormGroup = this.formService.formAluno;
   db = this.fireDatabase.database;
-  idUser: string | undefined = '';
   public bsAlunos = new BehaviorSubject<Array<any>>([]);
   listAlunos = this.bsAlunos.asObservable();
 
@@ -31,22 +30,32 @@ export class CadastroAlunoService {
   ) {}
 
   getData() {
-    this.db
-      .ref('Alunos')
-      .child(this.idUser!)
-      .on('value', (snapshot) => {
-        const data = snapshot.val();
-        this.bsAlunos.next([]);
-        if (data) {
-          const array = Object.keys(data).map((index) => data[index]);
-          this.bsAlunos.next(array);
+    this.fireAuth.currentUser
+      .then((user) => {
+        if (user) {
+          this.db
+            .ref('Alunos')
+            .child(user.uid)
+            .on('value', (snapshot) => {
+              const data = snapshot.val();
+              this.bsAlunos.next([]);
+              if (data) {
+                const array = Object.keys(data).map((index) => data[index]);
+                this.bsAlunos.next(array);
+              }
+            });
+        } else {
+          this.navCtrl.navigateBack('login');
         }
+      })
+      .catch((error) => {
+        this.alertService.showToast('Erro: ' + error.code);
       });
   }
 
   validFormData() {
-    const currentID = this.formAluno.controls['id'].value;
     if (this.formAluno.valid) {
+      const currentID = this.formAluno.controls['id'].value;
       if (currentID != null) {
         this.saveData(currentID);
       } else {
@@ -56,25 +65,37 @@ export class CadastroAlunoService {
         });
         this.saveData(id);
       }
+    } else {
+      this.alertService.showToast('Preencha todos os dados');
     }
   }
 
   saveData(id: string) {
-    this.db
-      .ref('Alunos')
-      .child(this.idUser!)
-      .child(id)
-      .update(this.formAluno.value)
-      .then((value) => {
-        this.formService.resetDataForm();
-        this.alertService.showAlert(
-          'Salvo com sucesso!',
-          'Suas alterações foram salvas com sucesso.'
-        );
-        this.navCtrl.back();
+    this.fireAuth.currentUser
+      .then((user) => {
+        if (user?.uid != null) {
+          this.db
+            .ref('Alunos')
+            .child(user.uid)
+            .child(id)
+            .update(this.formAluno.value)
+            .then((value) => {
+              this.formService.resetDataForm();
+              this.alertService.showAlert(
+                'Salvo com sucesso!',
+                'Suas alterações foram salvas com sucesso.'
+              );
+              this.navCtrl.back();
+            })
+            .catch((error) => {
+              this.alertService.showToast('Erro ao criar cadastro!');
+            });
+        } else {
+          this.navCtrl.navigateBack('login');
+        }
       })
       .catch((error) => {
-        this.alertService.showToast('Erro ao criar cadastro!');
+        this.alertService.showToast('Erro: ' + error.code);
       });
   }
 
@@ -100,18 +121,28 @@ export class CadastroAlunoService {
   }
 
   remove(id: string) {
-    this.db
-      .ref('Alunos')
-      .child(this.idUser!)
-      .child(id)
-      .remove()
-      .then((value) => {
-        this.db.ref('DiasTreino').child(this.idUser!).child(id).remove();
-        this.db.ref('Exercicios').child(this.idUser!).child(id).remove();
-        this.alertService.showToast('Excludo com sucesso!');
+    this.fireAuth.currentUser
+      .then((user) => {
+        if (user?.uid != null) {
+          this.db
+            .ref('Alunos')
+            .child(user.uid)
+            .child(id)
+            .remove()
+            .then((value) => {
+              this.db.ref('DiasTreino').child(user.uid).child(id).remove();
+              this.db.ref('Exercicios').child(user.uid).child(id).remove();
+              this.alertService.showToast('Excludo com sucesso!');
+            })
+            .catch((error) => {
+              this.alertService.showToast('Erro ao excluir cadastro!');
+            });
+        } else {
+          this.navCtrl.navigateBack('login');
+        }
       })
       .catch((error) => {
-        this.alertService.showToast('Erro ao excluir cadastro!');
+        this.alertService.showToast('Erro: ' + error.code);
       });
   }
 }

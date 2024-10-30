@@ -15,7 +15,6 @@ import { DiaTreinoModel } from 'src/app/models/dia-treino.model';
 export class CadastroDiaTreinoService {
   formDiaTreino: FormGroup = this.formService.formDiaTreino;
   db = this.fireDatabase.database;
-  idUser: string | undefined = '';
   public bsDiasTreino = new BehaviorSubject<Array<any>>([]);
   listDiasTreino = this.bsDiasTreino.asObservable();
 
@@ -34,38 +33,44 @@ export class CadastroDiaTreinoService {
   ) {}
 
   getData(aluno: AlunoModel) {
-    this.db
-      .ref('DiasTreino')
-      .child(this.idUser!)
-      .child(aluno.id)
-      .on('value', (snapshot) => {
-        const data = snapshot.val();
-        this.bsDiasTreino.next([]);
-        if (data) {
-          const array = Object.keys(data).map((index) => data[index]);
+    this.fireAuth.currentUser.then((user) => {
+      if (user?.uid) {
+        this.db
+          .ref('DiasTreino')
+          .child(user.uid)
+          .child(aluno.id)
+          .on('value', (snapshot) => {
+            const data = snapshot.val();
+            this.bsDiasTreino.next([]);
+            if (data) {
+              const array = Object.keys(data).map((index) => data[index]);
 
-          // Função de comparação para os dias da semana
-          const diasSemana = [
-            'Segunda',
-            'Terça',
-            'Quarta',
-            'Quinta',
-            'Sexta',
-            'Sábado',
-            'Domingo',
-          ];
-          array.sort((a, b) => {
-            return diasSemana.indexOf(a.dia) - diasSemana.indexOf(b.dia);
+              // Função de comparação para os dias da semana
+              const diasSemana = [
+                'Segunda',
+                'Terça',
+                'Quarta',
+                'Quinta',
+                'Sexta',
+                'Sábado',
+                'Domingo',
+              ];
+              array.sort((a, b) => {
+                return diasSemana.indexOf(a.dia) - diasSemana.indexOf(b.dia);
+              });
+
+              this.bsDiasTreino.next(array);
+            }
           });
-
-          this.bsDiasTreino.next(array);
-        }
-      });
+      } else {
+        this.navCtrl.navigateBack('login');
+      }
+    });
   }
 
   validFormData(aluno: AlunoModel) {
-    const currentID = this.formDiaTreino.controls['id'].value;
     if (this.formDiaTreino.valid) {
+      const currentID = this.formDiaTreino.controls['id'].value;
       if (currentID != null) {
         this.saveData(currentID, aluno);
       } else {
@@ -80,23 +85,29 @@ export class CadastroDiaTreinoService {
   }
 
   saveData(id: string, aluno: AlunoModel) {
-    this.db
-      .ref('DiasTreino')
-      .child(this.idUser!)
-      .child(aluno.id)
-      .child(id)
-      .update(this.formDiaTreino.value)
-      .then((value) => {
-        this.formService.resetDataForm();
-        this.alertService.showAlert(
-          'Salvo com sucesso!',
-          'Suas alterações foram salvas com sucesso.'
-        );
-        this.navCtrl.back();
-      })
-      .catch((error) => {
-        this.alertService.showToast('Erro ao criar cadastro!');
-      });
+    this.fireAuth.currentUser.then((user) => {
+      if (user?.uid) {
+        this.db
+          .ref('DiasTreino')
+          .child(user.uid)
+          .child(aluno.id)
+          .child(id)
+          .update(this.formDiaTreino.value)
+          .then((value) => {
+            this.formService.resetDataForm();
+            this.alertService.showAlert(
+              'Salvo com sucesso!',
+              'Suas alterações foram salvas com sucesso.'
+            );
+            this.navCtrl.back();
+          })
+          .catch((error) => {
+            this.alertService.showToast('Erro: ' + error.code);
+          });
+      } else {
+        this.navCtrl.navigateBack('login');
+      }
+    });
   }
 
   async showAlertRemove(data: DiaTreinoModel, aluno: AlunoModel) {
@@ -121,17 +132,23 @@ export class CadastroDiaTreinoService {
   }
 
   remove(id: string, aluno: AlunoModel) {
-    this.db
-      .ref('DiasTreino')
-      .child(this.idUser!)
-      .child(aluno.id)
-      .child(id)
-      .remove()
-      .then((value) => {
-        this.alertService.showToast('Excludo com sucesso!');
-      })
-      .catch((error) => {
-        this.alertService.showToast('Erro ao excluir cadastro!');
-      });
+    this.fireAuth.currentUser.then((user) => {
+      if (user?.uid) {
+        this.db
+          .ref('DiasTreino')
+          .child(user.uid)
+          .child(aluno.id)
+          .child(id)
+          .remove()
+          .then((value) => {
+            this.alertService.showToast('Excludo com sucesso!');
+          })
+          .catch((error) => {
+            this.alertService.showToast('Erro: ' + error.code);
+          });
+      } else {
+        this.navCtrl.navigateBack('login');
+      }
+    });
   }
 }

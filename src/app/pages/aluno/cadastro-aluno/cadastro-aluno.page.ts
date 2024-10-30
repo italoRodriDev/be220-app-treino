@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormGroup } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import * as moment from 'moment';
@@ -31,6 +32,7 @@ export class CadastroAlunoPage implements OnInit {
   emagrecer: string = '0.00';
 
   constructor(
+    private fireAuth: AngularFireAuth,
     private formService: FormService,
     private navCtrl: NavController,
     private cadastroAlunoService: CadastroAlunoService,
@@ -177,14 +179,19 @@ export class CadastroAlunoPage implements OnInit {
   onClickCopyCode() {
     const url = 'https://cyber-pump.web.app';
     //const url = 'http://localhost:8100';
-    const idProfessor = this.cadastroAlunoService.idUser;
-    const idAluno = this.aluno?.id;
-    const idTreino = `${url}/dados-aluno/${idProfessor}&${idAluno}`;
-    navigator.clipboard.writeText(idTreino);
-    this.alertService.showAlert(
-      'Link do treino copiado',
-      'Agora você pode compartilhar o link com seu aluno para que ele possa acompanhar o treino.'
-    );
+    this.fireAuth.currentUser.then((user) => {
+      if (user?.uid) {
+        const idAluno = this.aluno?.id;
+        const idTreino = `${url}/dados-aluno/${user.uid}&${idAluno}`;
+        navigator.clipboard.writeText(idTreino);
+        this.alertService.showAlert(
+          'Link do treino copiado',
+          'Agora você pode compartilhar o link com seu aluno para que ele possa acompanhar o treino.'
+        );
+      } else {
+        this.navCtrl.navigateBack('login');
+      }
+    });
   }
 
   onClickEditarDiaTreino(data: DiaTreinoModel) {

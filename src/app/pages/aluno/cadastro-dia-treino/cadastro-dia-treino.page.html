@@ -103,11 +103,11 @@
         <ion-item slot="header">
           <ion-label>
             <p>
-              <ion-title color="dark" style="padding-left: 0"
+              <ion-title color="light" style="padding-left: 0"
                 >{{ item?.nome }}</ion-title
               >
               <br />
-              <ion-label color="dark">Ênfase: {{ item?.enfase }}</ion-label>
+              <ion-label color="light">Ênfase: {{ item?.enfase }}</ion-label>
               <ion-label color="primary"
                 >{{ item?.series }} séries de {{ item?.repeticoes }}
                 repetições.</ion-label
@@ -150,7 +150,7 @@
     horizontal="end"
   >
     <ion-fab-button (click)="onClickCadastroExercicio()">
-      <ion-icon name="add"></ion-icon>
+      <ion-icon name="add" color="light"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

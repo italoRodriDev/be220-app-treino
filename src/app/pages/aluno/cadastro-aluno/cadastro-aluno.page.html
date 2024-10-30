@@ -2,9 +2,13 @@
   <ion-toolbar color="secondary">
     <ion-buttons>
       <ion-button (click)="onClickBack()">
-        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline"
+          color="light"
+        ></ion-icon>
       </ion-button>
-      <ion-title>Gestor de treinos</ion-title>
+      <ion-title color="light">Gestor de treinos</ion-title>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -17,7 +21,9 @@
   <ion-card mode="ios" *ngIf="aluno != null">
     <ion-card-content>
       <ion-item *ngIf="listDiasTreino.length">
-        <ion-label style="font-weight: bold;" color="dark">{{ tipoTreino?.titulo }}</ion-label>
+        <ion-label style="font-weight: bold" color="light"
+          >{{ tipoTreino?.titulo }}</ion-label
+        >
         <ion-avatar slot="end">
           <img [src]="tipoTreino?.icon" />
         </ion-avatar>
@@ -35,12 +41,13 @@
       </ion-row>
       <ion-row>
         <ion-col size="12">
-          <p><strong>Diagnóstico: </strong>{{  diagnosticoIMC }}</p>
+          <p><strong>Diagnóstico: </strong>{{ diagnosticoIMC }}</p>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="12">
-          <strong>Peso ideal: </strong>{{ pesoIdeal }}kg, <strong>Objetivo: </strong> {{ emagrecer }}kg
+          <strong>Peso ideal: </strong>{{ pesoIdeal }}kg,
+          <strong>Objetivo: </strong> {{ emagrecer }}kg
         </ion-col>
       </ion-row>
       <br />
@@ -66,9 +73,10 @@
         (click)="onClickCopyCode()"
         *ngIf="aluno?.id != null && blockEdit == true"
         [disabled]="!form.valid"
+        color="success"
       >
         <ion-label color="light">Compartilhar treino</ion-label>
-        <ion-icon name="share-social-outline"></ion-icon>
+        <ion-icon name="share-social-outline" color="light"></ion-icon>
       </ion-button>
     </ion-card-content>
   </ion-card>
@@ -207,14 +215,12 @@
           </ion-col>
         </ion-row>
         <br />
-        <ion-item [disabled]="blockEdit">
-          <ion-datetime
-            formControlName="dataNascimento"
-            locale="pt-BR"
-            presentation="date"
-            mode="ios"
-          ></ion-datetime>
-        </ion-item>
+        <ion-datetime
+          formControlName="dataNascimento"
+          locale="pt-BR"
+          presentation="date"
+          mode="ios"
+        ></ion-datetime>
       </form>
     </ion-card-content>
     <ion-card-content>
@@ -239,7 +245,7 @@
         <ion-item slot="header">
           <ion-label>
             <p>
-              <ion-title color="dark" style="padding-left: 0"
+              <ion-title color="light" style="padding-left: 0"
                 >{{ item?.dia }}</ion-title
               >
               <br />
@@ -281,7 +287,7 @@
     horizontal="end"
   >
     <ion-fab-button (click)="onClickCadastroDiaTreino()">
-      <ion-icon name="add"></ion-icon>
+      <ion-icon name="add" color="light"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

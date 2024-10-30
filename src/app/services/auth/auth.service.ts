@@ -1,16 +1,14 @@
-import { CadastroDiaTreinoService } from 'src/app/services/aluno/cadastro-dia-treino.service';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { FormGroup } from '@angular/forms';
 import { NavController } from '@ionic/angular';
-import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { CadastroDiaTreinoService } from 'src/app/services/aluno/cadastro-dia-treino.service';
 import { AlertsService } from '../alerts/alerts.service';
-import { FormService } from '../forms/form.service';
 import { CadastroAlunoService } from '../aluno/cadastro-aluno.service';
 import { CadastroExerciciosService } from '../aluno/cadastro-exercicios.service';
+import { FormService } from '../forms/form.service';
 import { DadosProfessorService } from '../professor/dados-professor.service';
 
 @Injectable({
@@ -52,10 +50,6 @@ export class AuthService {
   }
 
   getUid(id: string) {
-    this.cadastroAlunoService.idUser = id;
-    this.cadastroDiaTreinoService.idUser = id;
-    this.cadastroExerciciosService.idUser = id;
-    this.dadosProfessorService.idUser = id;
     this.dadosProfessorService.getData();
   }
 

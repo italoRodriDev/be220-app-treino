@@ -1,44 +1,57 @@
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { Platform } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { ProfessorModel } from 'src/app/models/professor.model';
+import { AlertsService } from '../alerts/alerts.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DadosProfessorService {
   db = this.fireDatabase.database;
-  idUser: string | undefined = '';
   public bsProfessor = new BehaviorSubject<ProfessorModel | undefined>(
     undefined
   );
   professor = this.bsProfessor.asObservable();
 
-  constructor(private fireDatabase: AngularFireDatabase,
-    private platorm: Platform
+  constructor(
+    private fireAuth: AngularFireAuth,
+    private fireDatabase: AngularFireDatabase,
+    private platorm: Platform,
+    private navCtrl: NavController,
+    private alertService: AlertsService
   ) {}
 
   getData() {
-    this.db
-      .ref('Professor')
-      .child(this.idUser!)
-      .once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          this.bsProfessor.next(data);
-        }
-      });
+    this.fireAuth.currentUser.then((user) => {
+      if (user?.uid) {
+        this.db
+          .ref('Professor')
+          .child(user?.uid)
+          .once('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+              this.bsProfessor.next(data);
+            }
+          }).catch((error) => {
+            this.alertService.showToast('Erro: ' + error.code);
+          });
+      } else {
+        this.navCtrl.navigateBack('login');
+      }
+    });
   }
 
   openInstagram() {
     // Verifica se o dispositivo é um celular
     var isAndroid = this.platorm.is('android');
     var isIos = this.platorm.is('ios');
-    
+
     // URL do perfil do Instagram
     var instagramURL = 'https://www.instagram.com/cyberpump_oficial/';
-    
+
     // Se for um dispositivo móvel, abre o aplicativo do Instagram, caso contrário, abre a página no navegador
     if (isAndroid || isIos) {
       // Abre o aplicativo do Instagram
