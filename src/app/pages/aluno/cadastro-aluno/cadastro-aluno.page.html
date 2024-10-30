@@ -1,0 +1,287 @@
+<ion-header mode="md">
+  <ion-toolbar color="secondary">
+    <ion-buttons>
+      <ion-button (click)="onClickBack()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+      <ion-title>Gestor de treinos</ion-title>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content mode="md">
+  <br />
+  <ion-item-divider>
+    <ion-title color="primary">DADOS</ion-title>
+  </ion-item-divider>
+  <ion-card mode="ios" *ngIf="aluno != null">
+    <ion-card-content>
+      <ion-item *ngIf="listDiasTreino.length">
+        <ion-label style="font-weight: bold;" color="dark">{{ tipoTreino?.titulo }}</ion-label>
+        <ion-avatar slot="end">
+          <img [src]="tipoTreino?.icon" />
+        </ion-avatar>
+      </ion-item>
+      <ion-row>
+        <ion-col size="4">
+          <p><strong>Altura:</strong> {{ aluno.altura }}cm</p>
+        </ion-col>
+        <ion-col size="4">
+          <p><strong>Peso:</strong> {{ aluno.peso }}kg</p>
+        </ion-col>
+        <ion-col size="4">
+          <p><strong>IMC:</strong> {{ calcIMC }}</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <p><strong>Diagnóstico: </strong>{{  diagnosticoIMC }}</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <strong>Peso ideal: </strong>{{ pesoIdeal }}kg, <strong>Objetivo: </strong> {{ emagrecer }}kg
+        </ion-col>
+      </ion-row>
+      <br />
+      <ion-card-title>{{ aluno.nome }}</ion-card-title>
+      <ion-label>
+        <p><strong>Idade:</strong> {{ idade }}</p>
+        <p><strong>Academia:</strong> {{ aluno.academia }}</p>
+        <p><strong>Telefone:</strong> {{ formatPhone(aluno.telefone) }}</p>
+        <p><strong>Doenças crônicas:</strong> {{ aluno.doencas }}</p>
+        <p><strong>Objetivo:</strong> {{ aluno.objetivo }}</p>
+        <p><strong>Nível:</strong> {{ aluno.nivel }}</p>
+      </ion-label>
+    </ion-card-content>
+    <ion-card-content>
+      <ion-button
+        (click)="onClickEdit()"
+        *ngIf="aluno?.id != null && blockEdit == true"
+        [disabled]="!form.valid"
+      >
+        <ion-label color="light">Editar</ion-label>
+      </ion-button>
+      <ion-button
+        (click)="onClickCopyCode()"
+        *ngIf="aluno?.id != null && blockEdit == true"
+        [disabled]="!form.valid"
+      >
+        <ion-label color="light">Compartilhar treino</ion-label>
+        <ion-icon name="share-social-outline"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+  <ion-card mode="ios" *ngIf="aluno?.id == null || blockEdit == false">
+    <ion-card-content>
+      <form [formGroup]="form">
+        <ion-item [disabled]="blockEdit">
+          <ion-input
+            formControlName="nome"
+            label="Nome"
+            labelPlacement="stacked"
+            placeholder="Digite o nome do aluno(a)"
+            required
+            minlength="3"
+            maxlength="100"
+          ></ion-input>
+        </ion-item>
+        <br />
+        <ion-item [disabled]="blockEdit">
+          <ion-input
+            formControlName="email"
+            label="E-mail"
+            labelPlacement="stacked"
+            placeholder="Digite o e-mail do aluno(a)"
+            required
+            minlength="3"
+            maxlength="100"
+          ></ion-input>
+        </ion-item>
+        <br />
+        <ion-item [disabled]="blockEdit">
+          <ion-input
+            formControlName="telefone"
+            label="Telefone"
+            labelPlacement="stacked"
+            placeholder="00 00000-0000"
+            required
+            minlength="11"
+            maxlength="11"
+          ></ion-input>
+        </ion-item>
+        <br />
+        <ion-item [disabled]="blockEdit">
+          <ion-input
+            formControlName="academia"
+            label="Academia"
+            labelPlacement="stacked"
+            placeholder="Digite o nome da academia"
+            required
+            minlength="3"
+            maxlength="100"
+          ></ion-input>
+        </ion-item>
+        <br />
+        <ion-item [disabled]="blockEdit">
+          <ion-select
+            mode="md"
+            label="Doenças Crônicas"
+            labelPlacement="stacked"
+            formControlName="doencas"
+            placeholder="Selecionar..."
+            multiple="true"
+            cancelText="Cancelar"
+            okText="Confirmar"
+          >
+            <ion-select-option
+              *ngFor="let item of listDoencasCronicas"
+              [value]="item.titulo"
+              >{{ item.titulo }}</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+        <br />
+        <ion-item [disabled]="blockEdit">
+          <ion-select
+            mode="md"
+            label="Objetivo do aluno"
+            labelPlacement="stacked"
+            formControlName="objetivo"
+            placeholder="Selecionar..."
+            cancelText="Cancelar"
+            okText="Confirmar"
+          >
+            <ion-select-option
+              *ngFor="let item of listObjetivos"
+              [value]="item.titulo"
+              >{{ item.titulo }}</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+        <br />
+        <ion-item [disabled]="blockEdit">
+          <ion-select
+            mode="md"
+            label="Nível do aluno"
+            labelPlacement="stacked"
+            formControlName="nivel"
+            placeholder="Selecionar..."
+            cancelText="Cancelar"
+            okText="Confirmar"
+          >
+            <ion-select-option
+              *ngFor="let item of listNiveis"
+              [value]="item.titulo"
+              >{{ item.titulo }}</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+        <br />
+        <ion-row>
+          <ion-col>
+            <ion-item [disabled]="blockEdit">
+              <ion-input
+                formControlName="peso"
+                label="Peso (Kg)"
+                labelPlacement="stacked"
+                placeholder="0.00"
+                required
+                type="number"
+                [readonly]="false"
+              ></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item [disabled]="blockEdit">
+              <ion-input
+                formControlName="altura"
+                label="Altura (cm)"
+                labelPlacement="stacked"
+                placeholder="0.00"
+                required
+                type="number"
+                [readonly]="false"
+              ></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <br />
+        <ion-item [disabled]="blockEdit">
+          <ion-datetime
+            formControlName="dataNascimento"
+            locale="pt-BR"
+            presentation="date"
+            mode="ios"
+          ></ion-datetime>
+        </ion-item>
+      </form>
+    </ion-card-content>
+    <ion-card-content>
+      <ion-row>
+        <ion-button
+          *ngIf="blockEdit == false || !form.controls['id'].valid"
+          (click)="onClickSave()"
+          [disabled]="!form.valid"
+        >
+          <ion-label color="light">Salvar</ion-label>
+        </ion-button>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+  <br />
+  <ion-item-divider>
+    <ion-title color="primary">DIAS DE TREINO</ion-title>
+  </ion-item-divider>
+  <ion-list>
+    <ion-accordion-group>
+      <ion-accordion *ngFor="let item of listDiasTreino">
+        <ion-item slot="header">
+          <ion-label>
+            <p>
+              <ion-title color="dark" style="padding-left: 0"
+                >{{ item?.dia }}</ion-title
+              >
+              <br />
+              <ion-label>Ênfase: {{ item?.enfase }}</ion-label>
+            </p>
+          </ion-label>
+        </ion-item>
+        <ion-item slot="content">
+          <ion-button
+            slot="start"
+            (click)="onClickEditarDiaTreino(item)"
+            shape="round"
+          >
+            <ion-label color="light">Ver exercícios</ion-label>
+          </ion-button>
+          <ion-button
+            slot="end"
+            (click)="onClickRemoveDiaTreino(item)"
+            shape="round"
+          >
+            <ion-label color="light">Excluir</ion-label>
+          </ion-button>
+        </ion-item>
+      </ion-accordion>
+    </ion-accordion-group>
+    <app-skeleton-list
+      *ngIf="!listDiasTreino.length"
+      [image]="'vetor_lista_vazia.svg'"
+    ></app-skeleton-list>
+  </ion-list>
+  <br />
+  <br />
+  <br />
+  <app-animation-list *ngIf="listDiasTreino.length"></app-animation-list>
+  <ion-fab
+    *ngIf="aluno != null"
+    slot="fixed"
+    vertical="bottom"
+    horizontal="end"
+  >
+    <ion-fab-button (click)="onClickCadastroDiaTreino()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

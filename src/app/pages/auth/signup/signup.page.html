@@ -1,0 +1,87 @@
+<ion-content mode="md" color="secondary">
+  <!--Login-->
+  <section class="center-content">
+    <img src="assets/images/logo.png" />
+    <ion-card class="card-form">
+      <ion-card-content>
+        <div class="intro-form">
+          <img class="logo" lazyLoad="assets/images/logo.png" />
+          <p class="title">Olá Professor(a)!</p>
+          <p>Se você ainda não possui um cadastro, preencha os campos abaixo.</p>
+        </div>
+        <div class="box-form">
+          <form [formGroup]="formSignUp">
+            <ion-item lines="none" color="light">
+              <ion-label position="stacked">Nome completo</ion-label>
+              <ion-input
+                formControlName="name"
+                placeholder="Digite seu nome"
+                type="text"
+                minlength="8"
+                maxlength="100"
+                required
+              ></ion-input>
+            </ion-item>
+            <ion-item lines="none" color="light">
+              <ion-label position="stacked">E-mail</ion-label>
+              <ion-input
+                formControlName="email"
+                placeholder="Digite seu e-mail"
+                type="email"
+                minlength="8"
+                maxlength="100"
+                required
+              ></ion-input>
+            </ion-item>
+            <ion-item lines="none" color="light">
+              <ion-label position="stacked">Crie sua senha (8 digitos)</ion-label>
+              <ion-input
+                formControlName="password"
+                placeholder="Digite sua senha"
+                [type]="!viewPass ? 'password' : 'text'"
+                minlength="8"
+                maxlength="20"
+                required
+              ></ion-input>
+              <ion-icon
+                (click)="viewPass = !viewPass"
+                slot="end"
+                [name]="viewPass ? 'eye-outline' : 'eye-off-outline'"
+              ></ion-icon>
+            </ion-item>
+          </form>
+        </div>
+      </ion-card-content>
+      <ion-card-content>
+        <ion-button
+          (click)="onClickContinue()"
+          [disabled]="!formSignUp.valid || isLoading"
+          class="btn"
+          shape="round"
+          color="primary"
+        >
+          <ion-spinner
+            *ngIf="isLoading"
+            color="light"
+            name="dots"
+          ></ion-spinner>
+          <ion-label *ngIf="!isLoading">
+            <ion-label color="light">{{ termos == true ? 'Concluir cadastro' : 'Continuar cadastro' }}</ion-label>
+          </ion-label>
+        </ion-button>
+        <br />
+        <br />
+        <ion-button
+          (click)="onClickSignIn()"
+          class="btn-esq-minha-senha"
+          shape="round"
+          fill="clear"
+          expand="full"
+          color="dark"
+        >
+          <ion-label>Já tenho uma conta</ion-label>
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </section>
+</ion-content>
