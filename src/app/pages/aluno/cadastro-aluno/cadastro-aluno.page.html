@@ -1,5 +1,5 @@
 <ion-header mode="md">
-  <ion-toolbar color="secondary">
+  <ion-toolbar color="primary">
     <ion-buttons>
       <ion-button (click)="onClickBack()">
         <ion-icon
@@ -8,7 +8,7 @@
           color="light"
         ></ion-icon>
       </ion-button>
-      <ion-title color="light">Gestor de treinos</ion-title>
+      <ion-title color="light">{{ aluno != null ? 'Gestor de treinos' : 'Novo aluno' }}</ion-title>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -215,11 +215,13 @@
           </ion-col>
         </ion-row>
         <br />
+        <ion-label color="light">Qual sua data de nascimento?</ion-label>
         <ion-datetime
           formControlName="dataNascimento"
           locale="pt-BR"
           presentation="date"
           mode="ios"
+          style="border-radius: 16px;"
         ></ion-datetime>
       </form>
     </ion-card-content>

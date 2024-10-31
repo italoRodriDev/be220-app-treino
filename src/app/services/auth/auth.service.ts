@@ -32,7 +32,7 @@ export class AuthService {
     private dadosProfessorService: DadosProfessorService,
     private cadastroAlunoService: CadastroAlunoService,
     private cadastroDiaTreinoService: CadastroDiaTreinoService,
-    private cadastroExerciciosService: CadastroExerciciosService,
+    private cadastroExerciciosService: CadastroExerciciosService
   ) {
     this.checkIfLogin();
   }
@@ -41,16 +41,11 @@ export class AuthService {
     this.fireAuth.onAuthStateChanged((user) => {
       if (user?.uid != null) {
         const id = user.uid.toString();
-        this.getUid(id);
         this.navigationToHome();
       } else {
         this.navCtrl.navigateForward('login');
       }
     });
-  }
-
-  getUid(id: string) {
-    this.dadosProfessorService.getData();
   }
 
   navigationToHome() {
@@ -92,6 +87,7 @@ export class AuthService {
         this.fireAuth
           .signInWithEmailAndPassword(email.value, password.value)
           .then((result) => {
+            this.formService.resetDataForm();
             this.navCtrl.navigateBack('home');
             resolve(false);
           })
@@ -113,8 +109,14 @@ export class AuthService {
           .createUserWithEmailAndPassword(email.value, password.value)
           .then((result) => {
             const id = result.user?.uid;
-            this.saveDataUser(id!, name.value, email.value);
-            resolve(false);
+            this.saveDataUser(id!, name.value, email.value)
+              .then((res) => {
+                this.formService.resetDataForm();
+                resolve(false);
+              })
+              .catch((error) => {
+                resolve(false);
+              });
           })
           .catch((e) => {
             resolve(false);
@@ -125,24 +127,28 @@ export class AuthService {
   }
 
   saveDataUser(idUser: string, name: string, email: string) {
-    this.db
-      .ref('Professor')
-      .child(idUser)
-      .update({
-        id: idUser,
-        name: name,
-        email: email,
-      })
-      .then(() => {
-        this.navCtrl.navigateBack('home');
-        this.alertService.showAlert(
-          'Cadastro realizado!',
-          'Agora você já pode começar a usar o nosso app!'
-        );
-      })
-      .catch((error) => {
-        this.alertService.showToast('Erro ao realizar cadastro');
-      });
+    return new Promise<boolean>((resolve, errorPromise) => {
+      this.db
+        .ref('Professor')
+        .child(idUser)
+        .update({
+          id: idUser,
+          name: name,
+          email: email,
+        })
+        .then(() => {
+          this.navCtrl.navigateBack('home');
+          this.alertService.showAlert(
+            'Cadastro realizado!',
+            'Agora você já pode começar a usar o nosso app!'
+          );
+          resolve(true);
+        })
+        .catch((error) => {
+          this.getError(error);
+          errorPromise(error);
+        });
+    });
   }
 
   signOutAccount() {
@@ -195,6 +201,9 @@ export class AuthService {
         break;
       case 'auth/invalid-login-credentials':
         this.alertService.showToast('Ops! Cadastro não finalizado.');
+        break;
+      default:
+        this.alertService.showToast('Ops! Algo saiu errado tente mais tarde.');
         break;
     }
   }

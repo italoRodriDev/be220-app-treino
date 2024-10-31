@@ -1,80 +1,140 @@
-<ion-content mode="md">
-  <div class="toolbar">
-    <ion-row>
-      <ion-avatar>
-        <img [lazyLoad]="'https://i.pinimg.com/originals/91/07/5f/91075fee1e72a27639b0eea74bd056be.jpg'">
-      </ion-avatar>
-    </ion-row>
-  </div>
-  <section *ngIf="professor">
-    <ion-card mode="ios">
-      <ion-card-content>
-        <ion-card-title
-          >{{ (professor.name!.split(' ')[0]) + ' ' + professor.name!.split('
-          ')[1] }}</ion-card-title
-        >
-        <ion-card-subtitle>Professor</ion-card-subtitle>
-      </ion-card-content>
-    </ion-card>
-    <ion-card mode="ios" *ngIf="isDayShare()">
-      <ion-card-content>
-        <ion-card-title>Não esqueça do nosso compromisso</ion-card-title>
-        <ion-card-subtitle>
-          Para continuar usando nosso aplicativo grátis, siga nosso perfil do Instagram
-          e compartilhe ao menos uma postagem do nosso perfil com seus seguidores todos os
-          meses.
-        </ion-card-subtitle>
-        <br />
-        <ion-button (click)="onClickOpenInstagram()"
-          >Seguir e compartilhar</ion-button
-        >
-      </ion-card-content>
-    </ion-card>
-  </section>
-  <section>
-    <br />
-    <ion-item-divider>
-      <ion-title color="primary">SEUS ALUNOS</ion-title>
-    </ion-item-divider>
-    <br />
-    <ion-list>
-      <ion-accordion-group>
-        <ion-accordion *ngFor="let item of listAlunos">
-          <ion-item slot="header">
-            <ion-label>
-              <p>
-                <ion-title color="light" style="padding-left: 0"
-                  >{{ (item.nome.length > 35 ? item.nome.substring(0, 35)+ '...'
-                  : item.nome) }}</ion-title
-                >
-                <br />
-                <ion-label>Academia: {{ item.academia }}</ion-label>
-              </p>
-            </ion-label>
-          </ion-item>
-          <ion-item slot="content">
-            <ion-button slot="start" (click)="onClickEdit(item)" shape="round">
-              <ion-label color="light">Gerenciar treino</ion-label>
-            </ion-button>
-            <ion-button slot="end" (click)="onClickRemove(item)" shape="round">
-              <ion-label color="light">Excluir</ion-label>
-            </ion-button>
-          </ion-item>
-        </ion-accordion>
-      </ion-accordion-group>
-      <app-skeleton-list
-        *ngIf="!listAlunos.length"
-        [image]="'vetor_lista_vazia.svg'"
-      ></app-skeleton-list>
-    </ion-list>
-  </section>
-  <br />
-  <br />
-  <br />
-  <app-animation-list *ngIf="listAlunos.length"></app-animation-list>
-  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button (click)="onClickNew()">
-      <ion-icon name="person-add-outline" color="light"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-</ion-content>
+<ion-menu contentId="main-content">
+  <ion-header>
+    <div class="content-menu">
+      <img class="logo-menu" [lazyLoad]="'assets/images/logo.svg'">
+    </div>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-item (click)="onClickNew()">
+      <ion-label>Novo aluno</ion-label>
+      <ion-icon slot="end" name="person-add-outline" color="light"></ion-icon>
+    </ion-item>
+  </ion-content>
+</ion-menu>
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar color="dark">
+      <ion-buttons>
+        <ion-menu-button></ion-menu-button>
+        <ion-title style="text-align: center">
+          <img class="logo-toolbar" [lazyLoad]="'assets/images/logo.svg'">
+        </ion-title>
+        <ion-button>
+          <div class="point-notification"></div>
+          <ion-icon slot="icon-only" name="notifications"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content mode="md">
+    <div class="toolbar animated-height" [class.shrink]="isShrunk">
+      <div class="box-info-user">
+        <ion-item  *ngIf="!professor" lines="none" color="transparent">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h3>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </h3>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 30%"
+              ></ion-skeleton-text>
+            </p>
+          </ion-label>
+        </ion-item>  
+        <ion-item *ngIf="professor" color="transparent" lines="none">
+          <ion-avatar>
+            <img [lazyLoad]="professor.urlFoto" defaultImage="assets/images/profile_default.webp">
+          </ion-avatar>
+          <ion-label>
+            <p class="name-user">
+              {{ (professor?.name!.length > 15 ? professor?.name!.toString().substring(0, 15).toString()+'...' : professor?.name ) }}
+            </p>
+            <p class="nivel">
+              Nível Roxo
+            </p>
+          </ion-label>
+        </ion-item>
+      </div>
+      <div class="box-radio-buttons-toolbar">
+        <ion-button fill="clear">
+          <div class="border-icon">
+            <ion-icon name="accessibility" color="secondary"></ion-icon>
+          </div>
+          <span>MEU CORPO</span>
+        </ion-button>
+        <ion-button fill="clear">
+          <div class="border-icon">
+            <ion-icon name="trophy" color="secondary"></ion-icon>
+          </div>
+          <span>OBJETIVOS E CONQUISTAS</span>
+        </ion-button>
+      </div>
+    </div>
+
+    <section *ngIf="professor">
+      <ion-card mode="ios" *ngIf="isDayShare()">
+        <ion-card-content>
+          <ion-card-title>Não esqueça do nosso compromisso</ion-card-title>
+          <ion-card-subtitle>
+            Para continuar usando nosso aplicativo grátis, siga nosso perfil do Instagram
+            e compartilhe ao menos uma postagem do nosso perfil com seus seguidores todos os
+            meses.
+          </ion-card-subtitle>
+          <br />
+          <ion-button (click)="onClickOpenInstagram()">Seguir e compartilhar</ion-button>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <section>
+      <br />
+      <ion-item-divider>
+        <ion-title color="primary">SEUS ALUNOS</ion-title>
+      </ion-item-divider>
+      <br />
+      <ion-list>
+        <ion-accordion-group>
+          <ion-accordion *ngFor="let item of listAlunos">
+            <ion-item slot="header">
+              <ion-label>
+                <p>
+                  <ion-title color="light" style="padding-left: 0">
+                    {{ (item.nome.length > 35 ? item.nome.substring(0, 35)+ '...' : item.nome) }}
+                  </ion-title>
+                  <br />
+                  <ion-label>Academia: {{ item.academia }}</ion-label>
+                </p>
+              </ion-label>
+            </ion-item>
+            <ion-item slot="content">
+              <ion-button slot="start" (click)="onClickEdit(item)" shape="round">
+                <ion-label color="light">Gerenciar treino</ion-label>
+              </ion-button>
+              <ion-button slot="end" (click)="onClickRemove(item)" shape="round">
+                <ion-label color="light">Excluir</ion-label>
+              </ion-button>
+            </ion-item>
+          </ion-accordion>
+        </ion-accordion-group>
+        <app-skeleton-list *ngIf="!listAlunos.length" [image]="'vetor_lista_vazia.svg'"></app-skeleton-list>
+      </ion-list>
+    </section>
+
+    <br /><br /><br />
+    <app-animation-list *ngIf="listAlunos.length"></app-animation-list>
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button (click)="onClickNew()">
+        <ion-icon name="person-add-outline" color="light"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ion-content>
+</div>

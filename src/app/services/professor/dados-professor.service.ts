@@ -35,7 +35,8 @@ export class DadosProfessorService {
             if (data) {
               this.bsProfessor.next(data);
             }
-          }).catch((error) => {
+          })
+          .catch((error) => {
             this.alertService.showToast('Erro: ' + error.code);
           });
       } else {

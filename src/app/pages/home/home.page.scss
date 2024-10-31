@@ -1,5 +1,94 @@
-.logo {
-    height: 45px;
-    padding-left: 8px;
+ion-header {
+  box-shadow: none;
+  .logo-toolbar {
+    height: 30px;
+  }
+
+  .point-notification {
+    height: 10px;
+    width: 10px;
+    border-radius: 100px;
+    background-color: aqua;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+
+.content-menu {
+    border-bottom: 5px solid var(--ion-color-light);
+    height: 200px;
+    background-color: var(--ion-color-tertiary);
+    .logo-menu {
+        padding: 30px;
+        height: 130px;
+    }
+}
+
+.toolbar {
+  background-color: var(--ion-color-dark);
+  height: 150px;
+  border-bottom-right-radius: 50px;
+  border-bottom-left-radius: 50px;
+  padding: 10px;
+
+  // -> container com info do usuário
+  .box-info-user {
+    ion-avatar {
+      width: 60px;
+      height: 60px;
+      margin-right: 5px;
+    }
+    .name-user {
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--ion-color-light);
+    }
+
+    .nivel {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--ion-color-tertiary);
+    }
+  }
+
+  // -> container com botoes Meu Corpo e Objetivos e conquistas
+  .box-radio-buttons-toolbar {
+    background-color: var(--ion-background-color-step-50);
+    border-radius: 100px;
+    margin-left: 30px;
+    margin-right: 30px;
     text-align: center;
+
+    ion-button {
+      letter-spacing: 0;
+      .border-icon {
+        max-width: 20px;
+        max-height: 20px;
+        min-width: 20px;
+        min-height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--ion-color-secondary);
+        border-radius: 100px;
+        margin-right: 3px;
+        font-size: 10px;
+      }
+    }
+
+    ion-button span {
+      color: var(--ion-color-secondary);
+      font-size: 8px;
+    }
+  }
+}
+
+.animated-height {
+  height: 500px; /* Altura inicial */
+  transition: height 0.5s ease; /* Duração e tipo de animação */
+}
+
+.animated-height.shrink {
+  height: 150px; /* Altura final */
 }

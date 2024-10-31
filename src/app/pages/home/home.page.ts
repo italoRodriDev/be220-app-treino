@@ -16,6 +16,7 @@ export class HomePage implements OnInit {
 
   professor: ProfessorModel|undefined;
   listAlunos: Array<AlunoModel> = [];
+  isShrunk: boolean = false;
 
   constructor(
     private navCtrl: NavController,
@@ -27,8 +28,11 @@ export class HomePage implements OnInit {
   ngOnInit() {}
 
   ionViewDidEnter() {
+    this.dadosProfessorService.getData();
     this.dadosProfessorService.professor.subscribe((data) => {
+      this.isShrunk = true;
       this.professor = data;
+      
     });
 
     this.cadastroAlunoService.getData();
