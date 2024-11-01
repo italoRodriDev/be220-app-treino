@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormGroup } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import * as moment from 'moment';
+import { Subscription } from 'rxjs';
 import { AlunoModel } from 'src/app/models/aluno.model';
 import { DiaTreinoModel } from 'src/app/models/dia-treino.model';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
@@ -30,6 +31,7 @@ export class CadastroAlunoPage implements OnInit {
   idade: string = '0';
   pesoIdeal: string = '0.00';
   emagrecer: string = '0.00';
+  private subscriptions: Subscription = new Subscription();
 
   constructor(
     private fireAuth: AngularFireAuth,
@@ -48,24 +50,40 @@ export class CadastroAlunoPage implements OnInit {
     this.getDataService();
   }
 
-  getDataService() {
-    this.cadastroAlunoService.aluno.subscribe((data) => {
-      if (data) {
-        this.aluno = data;
-        this.setDataForm();
-      } else {
-        this.blockEdit = false;
-      }
-    });
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe(); 
+  }
 
+  getDataService() {
+    // Inscreve-se para os dados do aluno
+    const alunoSubscription = this.cadastroAlunoService.aluno.subscribe(
+      (data) => {
+        if (data) {
+          this.aluno = data;
+          this.setDataForm();
+          this.loadDiasTreino(); // Carrega os dias de treino quando o aluno é atualizado
+        } else {
+          this.blockEdit = false; // Caso o aluno não seja válido
+        }
+      }
+    );
+
+    // Adiciona a assinatura à lista de subscrições
+    this.subscriptions.add(alunoSubscription);
+  }
+
+  private loadDiasTreino() {
     if (this.aluno != null) {
       this.cadastroDiasTreinoService.getData(this.aluno!);
-      this.cadastroDiasTreinoService.listDiasTreino.subscribe((list) => {
-        this.listDiasTreino = list;
-        this.validTypeTraining();
-        this.calculatorIMC(this.aluno?.peso!, this.aluno?.altura!);
-        this.calculatorIdade(this.aluno?.dataNascimento!);
-      });
+      const diasTreinoSubscription =
+        this.cadastroDiasTreinoService.listDiasTreino.subscribe((list) => {
+          this.listDiasTreino = list;
+          this.validTypeTraining();
+          this.calculatorIMC(this.aluno?.peso!, this.aluno?.altura!);
+          this.calculatorIdade(this.aluno?.dataNascimento!);
+        });
+
+      this.subscriptions.add(diasTreinoSubscription); // Adiciona a assinatura da lista de dias de treino
     }
   }
 

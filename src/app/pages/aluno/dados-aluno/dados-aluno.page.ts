@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import * as moment from 'moment';
+import { Subscription } from 'rxjs';
 import { AlunoModel } from 'src/app/models/aluno.model';
 import { DiaTreinoModel } from 'src/app/models/dia-treino.model';
-import { AlertsService } from 'src/app/services/alerts/alerts.service';
-import { CadastroAlunoService } from 'src/app/services/aluno/cadastro-aluno.service';
-import { CadastroDiaTreinoService } from 'src/app/services/aluno/cadastro-dia-treino.service';
 import { DadosAlunoService } from 'src/app/services/aluno/dados-aluno.service';
 import { DadosDiaTreinoService } from 'src/app/services/aluno/dados-dia-treino.service';
 import { FormService } from 'src/app/services/forms/form.service';
@@ -32,6 +29,7 @@ export class DadosAlunoPage implements OnInit {
   idade: string = '0';
   pesoIdeal: string = '0.00';
   emagrecer: string = '0.00';
+  private subscriptions: Subscription = new Subscription();
 
   constructor(
     private formService: FormService,
@@ -39,7 +37,6 @@ export class DadosAlunoPage implements OnInit {
     private dadosAlunoService: DadosAlunoService,
     private dadosDiasTreinoService: DadosDiaTreinoService,
     private dadosProfessorService: DadosProfessorService,
-    private alertService: AlertsService,
     private route: ActivatedRoute
   ) {}
 
@@ -49,6 +46,10 @@ export class DadosAlunoPage implements OnInit {
 
   ionViewDidEnter() {
     this.getDataService();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe(); 
   }
 
   async getParamsUrl() {
@@ -64,23 +65,39 @@ export class DadosAlunoPage implements OnInit {
   }
 
   getDataService() {
+    // Chamando o método para obter os dados do aluno
     this.dadosAlunoService.getData();
-    this.dadosAlunoService.aluno.subscribe((data) => {
+
+    // Inscrevendo-se para os dados do aluno
+    const alunoSubscription = this.dadosAlunoService.aluno.subscribe((data) => {
       if (data) {
         this.aluno = data;
-        if (this.aluno != null) {
-          this.dadosDiasTreinoService.getData(this.aluno!);
-          this.dadosDiasTreinoService.listDiasTreino.subscribe((list) => {
-            this.listDiasTreino = list;
-            this.validTypeTraining();
-            this.calculatorIMC(this.aluno?.peso!, this.aluno?.altura!);
-            this.calculatorIdade(this.aluno?.dataNascimento!);
-          });
-        }
+        this.fetchDiaTreinoData(); // Chama método separado para buscar dias de treino
       } else {
         this.blockEdit = false;
       }
     });
+
+    // Adiciona a inscrição à lista de subscrições
+    this.subscriptions.add(alunoSubscription);
+  }
+
+  // Método para buscar os dados de dias de treino
+  private fetchDiaTreinoData() {
+    if (this.aluno) {
+      this.dadosDiasTreinoService.getData(this.aluno!);
+
+      const diasTreinoSubscription =
+        this.dadosDiasTreinoService.listDiasTreino.subscribe((list) => {
+          this.listDiasTreino = list;
+          this.validTypeTraining();
+          this.calculatorIMC(this.aluno?.peso!, this.aluno?.altura!);
+          this.calculatorIdade(this.aluno?.dataNascimento!);
+        });
+
+      // Adiciona a inscrição à lista de subscrições
+      this.subscriptions.add(diasTreinoSubscription);
+    }
   }
 
   calculatorIMC(peso: number, altura: number) {
@@ -95,8 +112,8 @@ export class DadosAlunoPage implements OnInit {
     this.calcIMC = imc.toFixed(2); // Arredondando o resultado para 2 casas decimais
 
     // Determinando a categoria do IMC
-     // Determinando a categoria do IMC
-     if (imc < 18.5) {
+    // Determinando a categoria do IMC
+    if (imc < 18.5) {
       this.diagnosticoIMC = 'Abaixo do peso';
     } else if (imc < 24.9) {
       this.diagnosticoIMC = 'Peso normal';
@@ -114,12 +131,11 @@ export class DadosAlunoPage implements OnInit {
     var pesoIdeal = 22 * (altura * altura);
     this.pesoIdeal = pesoIdeal.toFixed(2).toString();
     var emagrecer = peso - pesoIdeal;
-    if(emagrecer > 0) {
+    if (emagrecer > 0) {
       this.emagrecer = emagrecer.toFixed(2).toString();
     } else {
       this.emagrecer = 'ND';
     }
-    
   }
 
   calculatorIdade(dataNascimento: string) {

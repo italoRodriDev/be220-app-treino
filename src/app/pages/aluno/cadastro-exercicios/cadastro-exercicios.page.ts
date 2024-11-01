@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { NavController } from '@ionic/angular';
@@ -24,6 +25,8 @@ export class CadastroExerciciosPage implements OnInit {
   listEnfase: Array<any> = this.formService.listEnfaseMusculos;
   blockEdit: boolean = false;
 
+  private subscriptions: Subscription = new Subscription();
+
   constructor(
     private formService: FormService,
     private navCtrl: NavController,
@@ -40,25 +43,43 @@ export class CadastroExerciciosPage implements OnInit {
     this.getDataService();
   }
 
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe(); 
+  }
+
   getDataService() {
-    this.cadastroAlunoService.aluno.subscribe((data) => {
-      if (data) {
-        this.aluno = data;
+    // Inscreve-se para os dados do aluno
+    const alunoSubscription = this.cadastroAlunoService.aluno.subscribe(
+      (data) => {
+        if (data) {
+          this.aluno = data;
+        }
       }
-    });
-    this.cadastroDiaTreinoService.diaTreino.subscribe((data) => {
-      if (data) {
-        this.diaTreino = data;
-      }
-    });
-    this.cadastroExercicioService.exercicio.subscribe((data) => {
-      if (data) {
-        this.exercicio = data;
-        this.setDataForm();
-      } else {
-        this.blockEdit = false;
-      }
-    });
+    );
+
+    // Inscreve-se para os dados do dia de treino
+    const diaTreinoSubscription =
+      this.cadastroDiaTreinoService.diaTreino.subscribe((data) => {
+        if (data) {
+          this.diaTreino = data;
+        }
+      });
+
+    // Inscreve-se para os dados do exercício
+    const exercicioSubscription =
+      this.cadastroExercicioService.exercicio.subscribe((data) => {
+        if (data) {
+          this.exercicio = data;
+          this.setDataForm();
+        } else {
+          this.blockEdit = false;
+        }
+      });
+
+    // Adiciona as inscrições à lista de subscrições
+    this.subscriptions.add(alunoSubscription);
+    this.subscriptions.add(diaTreinoSubscription);
+    this.subscriptions.add(exercicioSubscription);
   }
 
   setDataForm() {

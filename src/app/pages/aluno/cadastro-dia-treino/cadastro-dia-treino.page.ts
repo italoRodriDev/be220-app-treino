@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { NavController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { AlunoModel } from 'src/app/models/aluno.model';
 import { DiaTreinoModel } from 'src/app/models/dia-treino.model';
 import { ExercicioModel } from 'src/app/models/exercicio.model';
@@ -22,8 +23,8 @@ export class CadastroDiaTreinoPage implements OnInit {
   listDoencasCronicas: Array<any> = this.formService.listDoencasCronicas;
   listEnfase: Array<any> = this.formService.listEnfase;
   blockEdit: boolean = false;
-
   listExercicios: Array<ExercicioModel> = [];
+  private subscriptions: Subscription = new Subscription();
 
   constructor(
     private formService: FormService,
@@ -41,25 +42,46 @@ export class CadastroDiaTreinoPage implements OnInit {
     this.getDataService();
   }
 
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
   getDataService() {
-    this.cadastroAlunoService.aluno.subscribe((data) => {
-      if (data) {
-        this.aluno = data;
+    // Inscreve-se para os dados do aluno
+    const alunoSubscription = this.cadastroAlunoService.aluno.subscribe(
+      (data) => {
+        if (data) {
+          this.aluno = data;
+          this.loadExercicios(); // Carrega os exercícios quando o aluno é atualizado
+        }
       }
-    });
-    this.cadastroDiaTreinoService.diaTreino.subscribe((data) => {
-      if (data) {
-        this.diaTreino = data;
-        this.setDataForm();
-      } else {
-        this.blockEdit = false;
-      }
-    });
+    );
+
+    // Inscreve-se para os dados do dia de treino
+    const diaTreinoSubscription =
+      this.cadastroDiaTreinoService.diaTreino.subscribe((data) => {
+        if (data) {
+          this.diaTreino = data;
+          this.setDataForm();
+          this.loadExercicios(); // Carrega os exercícios quando o dia de treino é atualizado
+        } else {
+          this.blockEdit = false; // Caso o dia de treino não seja válido
+        }
+      });
+
+    // Adiciona as inscrições à lista de subscrições
+    this.subscriptions.add(alunoSubscription);
+    this.subscriptions.add(diaTreinoSubscription);
+  }
+
+  private loadExercicios() {
     if (this.aluno != null && this.diaTreino != null) {
       this.cadastroExercicioService.getData(this.aluno!, this.diaTreino!);
-      this.cadastroExercicioService.bsExercicios.subscribe((list) => {
-        this.listExercicios = list;
-      });
+      const exercicioSubscription =
+        this.cadastroExercicioService.bsExercicios.subscribe((list) => {
+          this.listExercicios = list;
+        });
+      this.subscriptions.add(exercicioSubscription); // Adiciona a assinatura da lista de exercícios
     }
   }
 
@@ -83,7 +105,11 @@ export class CadastroDiaTreinoPage implements OnInit {
   }
 
   onClickExcluirExercicio(data: ExercicioModel) {
-    this.cadastroExercicioService.showAlertRemove(this.aluno!, this.diaTreino!, data);
+    this.cadastroExercicioService.showAlertRemove(
+      this.aluno!,
+      this.diaTreino!,
+      data
+    );
   }
 
   onClickEdit() {

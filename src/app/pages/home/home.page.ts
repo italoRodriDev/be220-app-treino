@@ -1,4 +1,7 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
 import { NavController, Platform } from '@ionic/angular';
 import * as moment from 'moment';
 import { AlunoModel } from 'src/app/models/aluno.model';
@@ -14,17 +17,12 @@ import { DadosProfessorService } from 'src/app/services/professor/dados-professo
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  @ViewChild('swiperSlides', { static: false }) swiperRef:
-  | ElementRef
-  | undefined;
- 
-  professor: ProfessorModel|undefined;
-  listAlunos: Array<AlunoModel> = [];
-  isShrunk: boolean = false;
-  isMobile: boolean = this.platform.is('mobile');
-  listObjetivos: Array<any> = this.formService.listObjetivos; 
-  listConteudos: Array<any> = this.formService.listEnfaseMusculos;
-
+  professor: ProfessorModel | undefined;
+  listAlunos: AlunoModel[] = [];
+  isShrunk = false;
+  isMobile = this.platform.is('mobile');
+  listObjetivos = this.formService.listObjetivos;
+  listConteudos = this.formService.listEnfaseMusculos;
 
   constructor(
     private navCtrl: NavController,
@@ -35,16 +33,27 @@ export class HomePage implements OnInit {
     private platform: Platform
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.initializeData();
+  }
 
   ionViewDidEnter() {
+    this.loadProfessorData();
+    this.loadAlunosData();
+  }
+
+  private initializeData() {
+    this.isShrunk = true;
+  }
+
+  private loadProfessorData() {
     this.dadosProfessorService.getData();
     this.dadosProfessorService.professor.subscribe((data) => {
-      this.isShrunk = true;
       this.professor = data;
-      
     });
+  }
 
+  private loadAlunosData() {
     this.cadastroAlunoService.getData();
     this.cadastroAlunoService.listAlunos.subscribe((list) => {
       this.listAlunos = list;
@@ -52,13 +61,8 @@ export class HomePage implements OnInit {
   }
 
   isDayShare(): boolean {
-    // Obtém a data atual
     const currentDate = moment();
-
-    // Verifica se a data atual está entre os dias 20 e 28 do mês
-    const isBetweenDates = currentDate.date() >= 1 && currentDate.date() <= 15;
-
-    return isBetweenDates;
+    return currentDate.date() >= 1 && currentDate.date() <= 15;
   }
 
   onClickOpenInstagram() {
@@ -66,12 +70,15 @@ export class HomePage implements OnInit {
   }
 
   onClickEdit(data: AlunoModel) {
-    this.cadastroAlunoService.bsAluno.next(data);
-    this.navCtrl.navigateForward('cadastro-aluno');
+    this.navigateToCadastroAluno(data);
   }
 
   onClickNew() {
-    this.cadastroAlunoService.bsAluno.next(undefined);
+    this.navigateToCadastroAluno(undefined);
+  }
+
+  private navigateToCadastroAluno(data?: AlunoModel) {
+    this.cadastroAlunoService.bsAluno.next(data);
     this.navCtrl.navigateForward('cadastro-aluno');
   }
 
@@ -80,10 +87,14 @@ export class HomePage implements OnInit {
   }
 
   onClickExit() {
-    this.authService.signOutAccount();
+    this.signOut();
   }
 
   onClickSignOut() {
+    this.signOut();
+  }
+
+  private signOut() {
     this.authService.signOutAccount();
   }
 }

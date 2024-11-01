@@ -11,9 +11,9 @@ import { FormService } from 'src/app/services/forms/form.service';
 })
 export class LoginPage implements OnInit {
   formSignIn: FormGroup = this.formService.formSignIn;
-  isLoading: boolean = false;
-  typePersistence: string = 'session';
-  viewPass: boolean = false;
+  isLoading = false;
+  typePersistence = 'session';
+  viewPass = false;
 
   constructor(
     private authService: AuthService,
@@ -24,20 +24,15 @@ export class LoginPage implements OnInit {
   ngOnInit() {}
 
   onChangePersistenceAuth(ev: any) {
-    const checked = ev.detail.checked;
-    if (checked == true) {
-      this.typePersistence = 'local';
-    } else {
-      this.typePersistence = 'session';
-    }
+    this.typePersistence = ev.detail.checked ? 'local' : 'session';
   }
 
   onClickSignUp() {
-    this.navCtrl.navigateForward('cadastro');
+    this.navigateTo('cadastro');
   }
 
   onClickRecoverPassword() {
-    this.navCtrl.navigateForward('recuperacao');
+    this.navigateTo('recuperacao');
   }
 
   onClickContinue() {
@@ -45,5 +40,9 @@ export class LoginPage implements OnInit {
     this.authService.signIn().then((loading) => {
       this.isLoading = loading;
     });
+  }
+
+  private navigateTo(page: string) {
+    this.navCtrl.navigateForward(page);
   }
 }
