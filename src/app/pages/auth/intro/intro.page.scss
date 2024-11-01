@@ -1,45 +1,50 @@
 .color1 {
-    --clr: var(--ion-color-primary);
+  --clr: var(--ion-color-primary);
 }
 
 .color2 {
-    --clr: var(--ion-color-secondary);
+  --clr: var(--ion-color-secondary);
 }
 
 .color3 {
-    --clr: var(--ion-color-tertiary);
+  --clr: var(--ion-color-tertiary);
 }
 
 .container-footer {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 5px;
-    text-align: center;
-    .title {
-        font-weight: 700;
-        font-size: 28px;
-    }
+  bottom: 0;
+  right: 0;
+  left: 0;
+  position: absolute;
+  margin-bottom: 100px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+  text-align: center;
+  .title {
+    font-weight: 700;
+    font-size: 28px;
+  }
 
-    .subtitle {
-        font-weight: 500;
-        font-size: 18px;
-    }
+  .subtitle {
+    font-weight: 500;
+    font-size: 18px;
+  }
 }
 
 .dev {
-    margin-left: 10px;
-    margin-bottom: 4px;
-    text-align: center;
-    left: 0;
-    right: 0;
-    position: absolute;
-    bottom: 0;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  text-align: center;
+  left: 0;
+  right: 0;
+  position: absolute;
+  bottom: 0;
 }
 
 .ring {
   position: relative;
-  width: 500px;
-  height: 500px;
+  width: 400px;
+  height: 400px;
   display: flex;
   justify-content: center;
   align-items: center;

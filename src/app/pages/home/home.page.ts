@@ -34,7 +34,7 @@ export class HomePage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.initializeData();
+   
   }
 
   ionViewDidEnter() {
@@ -42,14 +42,11 @@ export class HomePage implements OnInit {
     this.loadAlunosData();
   }
 
-  private initializeData() {
-    this.isShrunk = true;
-  }
-
   private loadProfessorData() {
     this.dadosProfessorService.getData();
     this.dadosProfessorService.professor.subscribe((data) => {
       this.professor = data;
+      this.isShrunk = true;
     });
   }
 
