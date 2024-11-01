@@ -1,3 +1,3 @@
-# APP DE TREINOS be220
+# APP DE TREINOS - TESTE DE COMPETÊNCIA be220
 
 >> By Italo Rodri. Dev.

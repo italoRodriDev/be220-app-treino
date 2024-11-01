@@ -9,8 +9,12 @@ const userNotAuthorized = () => redirectUnauthorizedTo(['login']);
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'intro',
     pathMatch: 'full',
+  },
+  {
+    path: 'intro',
+    loadChildren: () => import('./pages/auth/intro/intro.module').then( m => m.IntroPageModule)
   },
   {
     path: 'login',
