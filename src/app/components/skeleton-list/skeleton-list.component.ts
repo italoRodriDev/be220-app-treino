@@ -6,18 +6,17 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./skeleton-list.component.scss'],
 })
 export class SkeletonListComponent implements OnInit {
-
   @Input() image: string = 'lista_vazia_anim.svg';
   @Input() label = 'Não existem dados para exibir...';
   public buffer = 0.06;
   public progress = 0;
   time: boolean = true;
-  list: Array<number> = [0, 1, 2, 3];
+  list: Array<number> = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   constructor() {}
 
   ngOnInit() {
-   this.setLoading();
+    this.setLoading();
   }
 
   setLoading() {

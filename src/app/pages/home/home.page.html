@@ -1,13 +1,22 @@
 <ion-menu contentId="main-content">
   <ion-header>
     <div class="content-menu">
-      <img class="logo-menu" [lazyLoad]="'assets/images/logo.svg'">
+      <img class="logo-menu" [lazyLoad]="'assets/images/logo.svg'" />
     </div>
   </ion-header>
   <ion-content class="ion-padding">
     <ion-item (click)="onClickNew()">
       <ion-label>Novo aluno</ion-label>
       <ion-icon slot="end" name="person-add-outline" color="light"></ion-icon>
+    </ion-item>
+    <ion-item>
+      <ion-label>Contato</ion-label>
+      <ion-icon slot="end" name="call-outline" color="light"></ion-icon>
+    </ion-item>
+    <br/>
+    <ion-item (click)="onClickSignOut()">
+      <ion-label>Sair</ion-label>
+      <ion-icon slot="end" name="exit-outline" color="light"></ion-icon>
     </ion-item>
   </ion-content>
 </ion-menu>
@@ -18,7 +27,7 @@
       <ion-buttons>
         <ion-menu-button></ion-menu-button>
         <ion-title style="text-align: center">
-          <img class="logo-toolbar" [lazyLoad]="'assets/images/logo.svg'">
+          <img class="logo-toolbar" [lazyLoad]="'assets/images/logo.svg'" />
         </ion-title>
         <ion-button>
           <div class="point-notification"></div>
@@ -31,7 +40,7 @@
   <ion-content mode="md">
     <div class="toolbar animated-height" [class.shrink]="isShrunk">
       <div class="box-info-user">
-        <ion-item  *ngIf="!professor" lines="none" color="transparent">
+        <ion-item *ngIf="!professor" lines="none" color="transparent">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
           </ion-thumbnail>
@@ -49,18 +58,21 @@
               ></ion-skeleton-text>
             </p>
           </ion-label>
-        </ion-item>  
+        </ion-item>
         <ion-item *ngIf="professor" color="transparent" lines="none">
           <ion-avatar>
-            <img [lazyLoad]="professor.urlFoto" defaultImage="assets/images/profile_default.webp">
+            <img
+              [lazyLoad]="professor.urlFoto"
+              defaultImage="assets/images/profile_default.webp"
+            />
           </ion-avatar>
           <ion-label>
             <p class="name-user">
-              {{ (professor?.name!.length > 15 ? professor?.name!.toString().substring(0, 15).toString()+'...' : professor?.name ) }}
+              {{ (professor?.name!.length > 15 ?
+              professor?.name!.toString().substring(0, 15).toString()+'...' :
+              professor?.name ) }}
             </p>
-            <p class="nivel">
-              Nível Roxo
-            </p>
+            <p class="nivel">Nível Roxo</p>
           </ion-label>
         </ion-item>
       </div>
@@ -79,62 +91,41 @@
         </ion-button>
       </div>
     </div>
-
-    <section *ngIf="professor">
-      <ion-card mode="ios" *ngIf="isDayShare()">
-        <ion-card-content>
-          <ion-card-title>Não esqueça do nosso compromisso</ion-card-title>
-          <ion-card-subtitle>
-            Para continuar usando nosso aplicativo grátis, siga nosso perfil do Instagram
-            e compartilhe ao menos uma postagem do nosso perfil com seus seguidores todos os
-            meses.
-          </ion-card-subtitle>
-          <br />
-          <ion-button (click)="onClickOpenInstagram()">Seguir e compartilhar</ion-button>
-        </ion-card-content>
-      </ion-card>
-    </section>
-
-    <section>
-      <br />
-      <ion-item-divider>
-        <ion-title color="primary">SEUS ALUNOS</ion-title>
+    <section *ngIf="listAlunos.length">
+      <!--Sessao Personal Online-->
+      <ion-item-divider color="transparent" lines="none">
+        <h3 slot="start" class="title-section">Personal Online</h3>
+        <ion-button fill="clear" shape="round">
+          <ion-icon name="add-circle-outline" color="secondary"></ion-icon>
+        </ion-button>
       </ion-item-divider>
+      <app-swiper-personal-online
+        [enableBtnInit]="true"
+        [titleBtnInit]="'Novo Treino'"
+        [list]="listAlunos"
+        (clickInitBtn)="onClickNew()"
+        (clickItem)="onClickEdit($event)"
+        (clickRemove)="onClickRemove($event)"
+      ></app-swiper-personal-online>
+      <!--Sessao Programas-->
+      <ion-item-divider color="transparent" lines="none">
+        <h3 slot="start" class="title-section">Programas</h3>
+        <ion-button fill="clear" shape="round">
+          <ion-icon name="add-circle-outline" color="secondary"></ion-icon>
+        </ion-button>
+      </ion-item-divider>
+      <app-swiper-programas [list]="listObjetivos"></app-swiper-programas>
+      <!--Sessao Conteúdos-->
+      <ion-item-divider color="transparent" lines="none">
+        <h3 slot="start" class="title-section">Conteúdos</h3>
+        <ion-button fill="clear" shape="round">
+          <ion-icon name="add-circle-outline" color="secondary"></ion-icon>
+        </ion-button>
+      </ion-item-divider>
+      <app-swiper-conteudos [list]="listConteudos"></app-swiper-conteudos>
       <br />
-      <ion-list>
-        <ion-accordion-group>
-          <ion-accordion *ngFor="let item of listAlunos">
-            <ion-item slot="header">
-              <ion-label>
-                <p>
-                  <ion-title color="light" style="padding-left: 0">
-                    {{ (item.nome.length > 35 ? item.nome.substring(0, 35)+ '...' : item.nome) }}
-                  </ion-title>
-                  <br />
-                  <ion-label>Academia: {{ item.academia }}</ion-label>
-                </p>
-              </ion-label>
-            </ion-item>
-            <ion-item slot="content">
-              <ion-button slot="start" (click)="onClickEdit(item)" shape="round">
-                <ion-label color="light">Gerenciar treino</ion-label>
-              </ion-button>
-              <ion-button slot="end" (click)="onClickRemove(item)" shape="round">
-                <ion-label color="light">Excluir</ion-label>
-              </ion-button>
-            </ion-item>
-          </ion-accordion>
-        </ion-accordion-group>
-        <app-skeleton-list *ngIf="!listAlunos.length" [image]="'vetor_lista_vazia.svg'"></app-skeleton-list>
-      </ion-list>
     </section>
-
-    <br /><br /><br />
+    <app-skeleton-list *ngIf="!listAlunos.length"></app-skeleton-list>
     <app-animation-list *ngIf="listAlunos.length"></app-animation-list>
-    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-      <ion-fab-button (click)="onClickNew()">
-        <ion-icon name="person-add-outline" color="light"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
   </ion-content>
 </div>

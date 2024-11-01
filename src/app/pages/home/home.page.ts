@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { NavController, Platform } from '@ionic/angular';
 import * as moment from 'moment';
 import { AlunoModel } from 'src/app/models/aluno.model';
 import { ProfessorModel } from 'src/app/models/professor.model';
 import { CadastroAlunoService } from 'src/app/services/aluno/cadastro-aluno.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { FormService } from 'src/app/services/forms/form.service';
 import { DadosProfessorService } from 'src/app/services/professor/dados-professor.service';
 
 @Component({
@@ -13,16 +14,25 @@ import { DadosProfessorService } from 'src/app/services/professor/dados-professo
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-
+  @ViewChild('swiperSlides', { static: false }) swiperRef:
+  | ElementRef
+  | undefined;
+ 
   professor: ProfessorModel|undefined;
   listAlunos: Array<AlunoModel> = [];
   isShrunk: boolean = false;
+  isMobile: boolean = this.platform.is('mobile');
+  listObjetivos: Array<any> = this.formService.listObjetivos; 
+  listConteudos: Array<any> = this.formService.listEnfaseMusculos;
+
 
   constructor(
     private navCtrl: NavController,
     private cadastroAlunoService: CadastroAlunoService,
     private dadosProfessorService: DadosProfessorService,
-    private authService: AuthService
+    private formService: FormService,
+    private authService: AuthService,
+    private platform: Platform
   ) {}
 
   ngOnInit() {}
@@ -70,6 +80,10 @@ export class HomePage implements OnInit {
   }
 
   onClickExit() {
+    this.authService.signOutAccount();
+  }
+
+  onClickSignOut() {
     this.authService.signOutAccount();
   }
 }

@@ -84,6 +84,11 @@ ion-header {
   }
 }
 
+.title-section {
+  font-weight: 700;
+  font-size: 30px;
+}
+
 .animated-height {
   height: 500px; /* Altura inicial */
   transition: height 0.5s ease; /* Duração e tipo de animação */

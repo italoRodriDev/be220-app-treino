@@ -1,0 +1,36 @@
+<div class="container">
+  <swiper-container
+    [slidesPerView]="isMobile ? 1.2 : 4.2"
+    [spaceBetween]="3"
+    [options]="swiperOptions"
+  >
+    <swiper-slide *ngIf="enableBtnInit" (click)="onClickInitBtn()">
+      <div class="card">
+        <img
+          class="background"
+          [lazyLoad]="'assets/images/menu_slide_btn.webp'"
+        />
+        <div class="content">
+          <ion-icon
+            name="add-circle-outline"
+            style="font-size: 50px"
+          ></ion-icon>
+          <h1 class="title">{{ titleBtnInit }}</h1>
+        </div>
+      </div>
+    </swiper-slide>
+    <swiper-slide *ngFor="let item of list" (click)="onClickItem(item)">
+      <div class="card">
+        <img
+          class="background"
+          [lazyLoad]="item?.url"
+          defaultImage="assets/images/background_black.jpg"
+        />
+        <div class="overlay"></div>
+        <div class="content">
+          <h1 class="title">{{ item?.titulo }}</h1>
+        </div>
+      </div>
+    </swiper-slide>
+  </swiper-container>
+</div>

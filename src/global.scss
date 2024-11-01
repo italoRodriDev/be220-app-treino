@@ -37,52 +37,57 @@
 @import "@ionic/angular/css/palettes/dark.system.css";
 
 
+@import "swiper/scss";
+@import "swiper/scss/navigation";
+@import "swiper/scss/pagination";
+
+
 // ######################### FONTES ############################
 
 @font-face {
-    font-family: "Manrope";
-    font-weight: bold;
-    src: url("../src/assets/fonts/Manrope-Bold.ttf");
-  }
-  
-  @font-face {
-    font-family: "Manrope";
-    font-style: medium;
-    src: url("../src/assets/fonts/Manrope-SemiBold.ttf");
-  }
-  
-  @font-face {
-    font-family: "Manrope";
-    font-style: normal;
-    font-weight: normal;
-    src: url("../src/assets/fonts/Manrope-Regular.ttf");
-  }
-  
-  @font-face {
-    font-family: "Manrope";
-    src: url("../src/assets/fonts/Manrope-Regular.ttf");
-    font-style: italic;
-  }
-  
-  @font-face {
-    font-family: "Popins";
-    src: url("../src/assets/fonts/Manrope-Light.ttf");
-  }
-  
-  ion-header {
-    box-shadow: none;
-    font-family: "Manrope";
-  }
-  
-  ion-content {
-    font-family: "Manrope";
-  }
-  
-  body {
-    font-family: "Manrope";
-  }
+  font-family: "Manrope";
+  font-weight: bold;
+  src: url("../src/assets/fonts/Manrope-Bold.ttf");
+}
 
-  ion-button {
-    text-transform: none;
-    --box-shadow: none;
-  }
+@font-face {
+  font-family: "Manrope";
+  font-style: medium;
+  src: url("../src/assets/fonts/Manrope-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../src/assets/fonts/Manrope-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("../src/assets/fonts/Manrope-Regular.ttf");
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Popins";
+  src: url("../src/assets/fonts/Manrope-Light.ttf");
+}
+
+ion-header {
+  box-shadow: none;
+  font-family: "Manrope";
+}
+
+ion-content {
+  font-family: "Manrope";
+}
+
+body {
+  font-family: "Manrope";
+}
+
+ion-button {
+  text-transform: none;
+  --box-shadow: none;
+}
