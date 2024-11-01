@@ -13,7 +13,6 @@
       <ion-label>Contato</ion-label>
       <ion-icon slot="end" name="call-outline" color="light"></ion-icon>
     </ion-item>
-    <br/>
     <ion-item (click)="onClickSignOut()">
       <ion-label>Sair</ion-label>
       <ion-icon slot="end" name="exit-outline" color="light"></ion-icon>
@@ -69,8 +68,8 @@
           <ion-label>
             <p class="name-user">
               {{ (professor?.name!.length > 15 ?
-              professor?.name!.toString().substring(0, 15).toString()+'...' :
-              professor?.name ) }}
+              professor.name!.toString().substring(0, 15).toString()+'...' :
+              professor.name ) }}
             </p>
             <p class="nivel">Nível Roxo</p>
           </ion-label>
@@ -95,8 +94,8 @@
       <!--Sessao Personal Online-->
       <ion-item-divider color="transparent" lines="none">
         <h3 slot="start" class="title-section">Personal Online</h3>
-        <ion-button fill="clear" shape="round">
-          <ion-icon name="add-circle-outline" color="secondary"></ion-icon>
+        <ion-button fill="clear" shape="round" (click)="onClickNew()">
+          <ion-icon class="btn-add" name="add-circle-outline" color="secondary"></ion-icon>
         </ion-button>
       </ion-item-divider>
       <app-swiper-personal-online
@@ -110,17 +109,13 @@
       <!--Sessao Programas-->
       <ion-item-divider color="transparent" lines="none">
         <h3 slot="start" class="title-section">Programas</h3>
-        <ion-button fill="clear" shape="round">
-          <ion-icon name="add-circle-outline" color="secondary"></ion-icon>
-        </ion-button>
+        <div class="new-info">New</div>
       </ion-item-divider>
       <app-swiper-programas [list]="listObjetivos"></app-swiper-programas>
       <!--Sessao Conteúdos-->
       <ion-item-divider color="transparent" lines="none">
         <h3 slot="start" class="title-section">Conteúdos</h3>
-        <ion-button fill="clear" shape="round">
-          <ion-icon name="add-circle-outline" color="secondary"></ion-icon>
-        </ion-button>
+        <div class="new-info">New</div>
       </ion-item-divider>
       <app-swiper-conteudos [list]="listConteudos"></app-swiper-conteudos>
       <br />

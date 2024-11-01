@@ -89,6 +89,16 @@ ion-header {
   font-size: 30px;
 }
 
+.btn-add {
+  font-size: 22px;
+}
+
+.new-info {
+  background-color: var(--ion-color-secondary);
+  border-radius: 5px;
+  padding: 5px;
+}
+
 .animated-height {
   height: 500px; /* Altura inicial */
   transition: height 0.5s ease; /* Duração e tipo de animação */

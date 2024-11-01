@@ -33,34 +33,33 @@ export class CadastroExerciciosService {
     private alertCtrl: AlertController
   ) {}
 
-  getData(aluno: AlunoModel, diaTreino: DiaTreinoModel) {
-    this.fireAuth.currentUser.then((user) => {
-      if (user?.uid) {
-        this.db
-          .ref('Exercicios')
-          .child(user.uid)
-          .child(aluno.id)
-          .child(diaTreino.id)
-          .on('value', (snapshot) => {
-            const data = snapshot.val();
-            this.bsExercicios.next([]);
-            if (data) {
-              const array = Object.keys(data).map((index) => data[index]);
-              this.bsExercicios.next(array);
-            }
-          });
-      } else {
-        this.navCtrl.navigateBack('login');
-      }
-    });
+  async getData(aluno: AlunoModel, diaTreino: DiaTreinoModel) {
+    const user = await this.fireAuth.currentUser;
+    if (user?.uid) {
+      this.db
+        .ref('Exercicios')
+        .child(user.uid)
+        .child(aluno.id)
+        .child(diaTreino.id)
+        .on('value', (snapshot) => {
+          const data = snapshot.val();
+          this.bsExercicios.next([]);
+          if (data) {
+            const array = Object.keys(data).map((index) => data[index]);
+            this.bsExercicios.next(array);
+          }
+        });
+    } else {
+      this.navCtrl.navigateBack('login');
+    }
   }
 
-  validFormData(aluno: AlunoModel, diaTreino: DiaTreinoModel) {
+  async validFormData(aluno: AlunoModel, diaTreino: DiaTreinoModel) {
     if (this.formExercicio.valid) {
       const currentID = this.formExercicio.controls['id'].value;
 
       if (currentID != null) {
-        this.saveData(currentID, aluno, diaTreino);
+        await this.saveData(currentID, aluno, diaTreino);
       } else {
         const id = this.fireDatabase.createPushId();
         this.formExercicio.patchValue({
@@ -68,36 +67,35 @@ export class CadastroExerciciosService {
           idAluno: aluno.id,
           idDiaTreino: diaTreino.id,
         });
-        this.saveData(id, aluno, diaTreino);
+        await this.saveData(id, aluno, diaTreino);
       }
     }
   }
 
-  saveData(id: string, aluno: AlunoModel, diaTreino: DiaTreinoModel) {
-    this.fireAuth.currentUser.then((user) => {
-      if (user?.uid) {
-        this.db
+  async saveData(id: string, aluno: AlunoModel, diaTreino: DiaTreinoModel) {
+    const user = await this.fireAuth.currentUser;
+    if (user?.uid) {
+      try {
+        await this.db
           .ref('Exercicios')
           .child(user.uid)
           .child(aluno.id)
           .child(diaTreino.id)
           .child(id)
-          .update(this.formExercicio.value)
-          .then((value) => {
-            this.formService.resetDataForm();
-            this.alertService.showAlert(
-              'Salvo com sucesso!',
-              'Suas alterações foram salvas com sucesso.'
-            );
-            this.navCtrl.back();
-          })
-          .catch((error) => {
-            this.alertService.showToast('Erro: ' + error.code);
-          });
-      } else {
-        this.navCtrl.navigateBack('login');
+          .update(this.formExercicio.value);
+        
+        this.formService.resetDataForm();
+        this.alertService.showAlert(
+          'Salvo com sucesso!',
+          'Suas alterações foram salvas com sucesso.'
+        );
+        this.navCtrl.back();
+      } catch (error: any) {
+        this.alertService.showToast('Erro: ' + error.code);
       }
-    });
+    } else {
+      this.navCtrl.navigateBack('login');
+    }
   }
 
   async showAlertRemove(
@@ -117,7 +115,7 @@ export class CadastroExerciciosService {
         {
           text: 'Excluir',
           handler: () => {
-            this.remove(aluno, diaTreino, exercicio);
+            this.remove(exercicio.id, aluno);
           },
         },
       ],
@@ -125,29 +123,22 @@ export class CadastroExerciciosService {
     alert.present();
   }
 
-  remove(
-    aluno: AlunoModel,
-    diaTreino: DiaTreinoModel,
-    exercicio: ExercicioModel
-  ) {
-    this.fireAuth.currentUser.then((user) => {
-      if (user?.uid) {
-        this.db
+  async remove(id: string, aluno: AlunoModel) {
+    const user = await this.fireAuth.currentUser;
+    if (user?.uid) {
+      try {
+        await this.db
           .ref('Exercicios')
           .child(user.uid)
           .child(aluno.id)
-          .child(diaTreino.id)
-          .child(exercicio.id)
-          .remove()
-          .then((value) => {
-            this.alertService.showToast('Excludo com sucesso!');
-          })
-          .catch((error) => {
-            this.alertService.showToast('Erro: ' + error.code);
-          });
-      } else {
-        this.navCtrl.navigateBack('login');
+          .child(id)
+          .remove();
+        this.alertService.showToast('Excluído com sucesso!');
+      } catch (error: any) {
+        this.alertService.showToast('Erro: ' + error?.code);
       }
-    });
+    } else {
+      this.navCtrl.navigateBack('login');
+    }
   }
 }

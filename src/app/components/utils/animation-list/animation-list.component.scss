@@ -1,0 +1,19 @@
+img {
+  padding-top: 10px;
+  display: block;
+  margin: auto;
+  padding: 5px;
+  animation: moveSideToSide 8s ease-in-out forwards infinite;
+}
+
+@keyframes moveSideToSide {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

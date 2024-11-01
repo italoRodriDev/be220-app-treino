@@ -18,9 +18,7 @@ export class CadastroDiaTreinoService {
   public bsDiasTreino = new BehaviorSubject<Array<any>>([]);
   listDiasTreino = this.bsDiasTreino.asObservable();
 
-  public bsDiaTreino = new BehaviorSubject<DiaTreinoModel | undefined>(
-    undefined
-  );
+  public bsDiaTreino = new BehaviorSubject<DiaTreinoModel | undefined>(undefined);
   diaTreino = this.bsDiaTreino.asObservable();
 
   constructor(
@@ -32,89 +30,61 @@ export class CadastroDiaTreinoService {
     private alertCtrl: AlertController
   ) {}
 
-  getData(aluno: AlunoModel) {
-    this.fireAuth.currentUser.then((user) => {
+  async getData(aluno: AlunoModel) {
+    try {
+      const user = await this.fireAuth.currentUser;
       if (user?.uid) {
-        this.db
-          .ref('DiasTreino')
-          .child(user.uid)
-          .child(aluno.id)
-          .on('value', (snapshot) => {
-            const data = snapshot.val();
-            this.bsDiasTreino.next([]);
-            if (data) {
-              const array = Object.keys(data).map((index) => data[index]);
-
-              // Função de comparação para os dias da semana
-              const diasSemana = [
-                'Segunda',
-                'Terça',
-                'Quarta',
-                'Quinta',
-                'Sexta',
-                'Sábado',
-                'Domingo',
-              ];
-              array.sort((a, b) => {
-                return diasSemana.indexOf(a.dia) - diasSemana.indexOf(b.dia);
-              });
-
-              this.bsDiasTreino.next(array);
-            }
-          });
+        this.db.ref('DiasTreino').child(user.uid).child(aluno.id).on('value', (snapshot) => {
+          const data = snapshot.val();
+          this.bsDiasTreino.next([]);
+          if (data) {
+            const array = Object.keys(data).map((key) => data[key]);
+            this.bsDiasTreino.next(this.sortDiasSemana(array));
+          }
+        });
       } else {
         this.navCtrl.navigateBack('login');
       }
-    });
+    } catch (error: any) {
+      this.alertService.showToast('Erro ao obter dados: ' + error?.message);
+    }
+  }
+
+  private sortDiasSemana(array: Array<any>) {
+    const diasSemana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+    return array.sort((a, b) => diasSemana.indexOf(a.dia) - diasSemana.indexOf(b.dia));
   }
 
   validFormData(aluno: AlunoModel) {
     if (this.formDiaTreino.valid) {
       const currentID = this.formDiaTreino.controls['id'].value;
-      if (currentID != null) {
-        this.saveData(currentID, aluno);
-      } else {
-        const id = this.fireDatabase.createPushId();
-        this.formDiaTreino.patchValue({
-          id: id,
-          idAluno: aluno.id,
-        });
-        this.saveData(id, aluno);
-      }
+      const id = currentID || this.fireDatabase.createPushId();
+      this.formDiaTreino.patchValue({ id, idAluno: aluno.id });
+      this.saveData(id, aluno);
     }
   }
 
-  saveData(id: string, aluno: AlunoModel) {
-    this.fireAuth.currentUser.then((user) => {
+  async saveData(id: string, aluno: AlunoModel) {
+    try {
+      const user = await this.fireAuth.currentUser;
       if (user?.uid) {
-        this.db
-          .ref('DiasTreino')
-          .child(user.uid)
-          .child(aluno.id)
-          .child(id)
-          .update(this.formDiaTreino.value)
-          .then((value) => {
-            this.formService.resetDataForm();
-            this.alertService.showAlert(
-              'Salvo com sucesso!',
-              'Suas alterações foram salvas com sucesso.'
-            );
-            this.navCtrl.back();
-          })
-          .catch((error) => {
-            this.alertService.showToast('Erro: ' + error.code);
-          });
+        await this.db.ref('DiasTreino').child(user.uid).child(aluno.id).child(id).update(this.formDiaTreino.value);
+        this.formService.resetDataForm();
+        this.alertService.showAlert('Salvo com sucesso!', 'Suas alterações foram salvas com sucesso.');
+        this.navCtrl.back();
       } else {
         this.navCtrl.navigateBack('login');
       }
-    });
+    } catch (error: any) {
+      this.alertService.showToast('Erro ao criar cadastro: ' + error?.message);
+    }
   }
 
   async showAlertRemove(data: DiaTreinoModel, aluno: AlunoModel) {
     const alert = await this.alertCtrl.create({
       header: 'Deseja excluir?',
       subHeader: data.dia,
-      message: 'Ao confirmar será excluído.',
+      message: 'Ao confirmar, será excluído.',
       buttons: [
         {
           text: 'Cancelar',
@@ -122,33 +92,24 @@ export class CadastroDiaTreinoService {
         },
         {
           text: 'Excluir',
-          handler: () => {
-            this.remove(data?.id, aluno);
-          },
+          handler: () => this.remove(data.id, aluno),
         },
       ],
     });
-    alert.present();
+    await alert.present();
   }
 
-  remove(id: string, aluno: AlunoModel) {
-    this.fireAuth.currentUser.then((user) => {
+  async remove(id: string, aluno: AlunoModel) {
+    try {
+      const user = await this.fireAuth.currentUser;
       if (user?.uid) {
-        this.db
-          .ref('DiasTreino')
-          .child(user.uid)
-          .child(aluno.id)
-          .child(id)
-          .remove()
-          .then((value) => {
-            this.alertService.showToast('Excludo com sucesso!');
-          })
-          .catch((error) => {
-            this.alertService.showToast('Erro: ' + error.code);
-          });
+        await this.db.ref('DiasTreino').child(user.uid).child(aluno.id).child(id).remove();
+        this.alertService.showToast('Excluído com sucesso!');
       } else {
         this.navCtrl.navigateBack('login');
       }
-    });
+    } catch (error: any) {
+      this.alertService.showToast('Erro ao excluir cadastro: ' + error?.message);
+    }
   }
 }

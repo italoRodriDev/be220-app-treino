@@ -11,47 +11,41 @@ import { AlertsService } from '../alerts/alerts.service';
 })
 export class DadosProfessorService {
   db = this.fireDatabase.database;
-  public bsProfessor = new BehaviorSubject<ProfessorModel | undefined>(
-    undefined
-  );
+  public bsProfessor = new BehaviorSubject<ProfessorModel | undefined>(undefined);
   professor = this.bsProfessor.asObservable();
 
   constructor(
     private fireAuth: AngularFireAuth,
     private fireDatabase: AngularFireDatabase,
-    private platorm: Platform,
+    private platform: Platform, // Corrigido aqui
     private navCtrl: NavController,
     private alertService: AlertsService
   ) {}
 
-  getData() {
-    this.fireAuth.currentUser.then((user) => {
+  async getData() {
+    try {
+      const user = await this.fireAuth.currentUser;
       if (user?.uid) {
-        this.db
-          .ref('Professor')
-          .child(user?.uid)
-          .once('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-              this.bsProfessor.next(data);
-            }
-          })
-          .catch((error) => {
-            this.alertService.showToast('Erro: ' + error.code);
-          });
+        const snapshot = await this.db.ref('Professor').child(user.uid).once('value');
+        const data = snapshot.val();
+        if (data) {
+          this.bsProfessor.next(data);
+        }
       } else {
         this.navCtrl.navigateBack('login');
       }
-    });
+    } catch (error) {
+      this.alertService.showToast('Erro: ' + error);
+    }
   }
 
   openInstagram() {
     // Verifica se o dispositivo é um celular
-    var isAndroid = this.platorm.is('android');
-    var isIos = this.platorm.is('ios');
+    const isAndroid = this.platform.is('android');
+    const isIos = this.platform.is('ios');
 
     // URL do perfil do Instagram
-    var instagramURL = 'https://www.instagram.com/cyberpump_oficial/';
+    const instagramURL = 'https://www.instagram.com/cyberpump_oficial/';
 
     // Se for um dispositivo móvel, abre o aplicativo do Instagram, caso contrário, abre a página no navegador
     if (isAndroid || isIos) {

@@ -9,33 +9,42 @@ import { ExercicioModel } from 'src/app/models/exercicio.model';
   providedIn: 'root',
 })
 export class DadosExerciciosService {
-  db = this.fireDatabase.database;
+  private db = this.fireDatabase.database;
   public bsExercicios = new BehaviorSubject<Array<any>>([]);
-  listExercicios = this.bsExercicios.asObservable();
+  public listExercicios = this.bsExercicios.asObservable();
 
   public bsExercicio = new BehaviorSubject<ExercicioModel | undefined>(
     undefined
   );
-  exercicio = this.bsExercicio.asObservable();
+  public exercicio = this.bsExercicio.asObservable();
 
   constructor(private fireDatabase: AngularFireDatabase) {}
 
-  getData(aluno: AlunoModel, diaTreino: DiaTreinoModel) {
+  async getData(aluno: AlunoModel, diaTreino: DiaTreinoModel) {
     const idProfessor = localStorage.getItem('data-p');
     if (idProfessor) {
-      this.db
-        .ref('Exercicios')
-        .child(idProfessor)
-        .child(aluno.id)
-        .child(diaTreino.id)
-        .once('value', (snapshot) => {
-          const data = snapshot.val();
-          this.bsExercicios.next([]);
-          if (data) {
-            const array = Object.keys(data).map((index) => data[index]);
-            this.bsExercicios.next(array);
-          }
-        });
+      try {
+        const snapshot = await this.db
+          .ref('Exercicios')
+          .child(idProfessor)
+          .child(aluno.id)
+          .child(diaTreino.id)
+          .once('value');
+
+        const data = snapshot.val();
+        this.bsExercicios.next([]);
+
+        if (data) {
+          const array = Object.keys(data).map((key) => data[key]);
+          this.bsExercicios.next(array);
+        } else {
+          console.warn('Nenhum dado encontrado para Exercícios.');
+        }
+      } catch (error) {
+        console.error('Erro ao obter dados de Exercícios:', error);
+      }
+    } else {
+      console.warn('ID do professor não encontrado no localStorage.');
     }
   }
 }

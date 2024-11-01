@@ -8,47 +8,57 @@ import { DiaTreinoModel } from 'src/app/models/dia-treino.model';
   providedIn: 'root',
 })
 export class DadosDiaTreinoService {
-  db = this.fireDatabase.database;
+  private db = this.fireDatabase.database;
   public bsDiasTreino = new BehaviorSubject<Array<any>>([]);
-  listDiasTreino = this.bsDiasTreino.asObservable();
+  public listDiasTreino = this.bsDiasTreino.asObservable();
 
   public bsDiaTreino = new BehaviorSubject<DiaTreinoModel | undefined>(
     undefined
   );
-  diaTreino = this.bsDiaTreino.asObservable();
+  public diaTreino = this.bsDiaTreino.asObservable();
 
   constructor(private fireDatabase: AngularFireDatabase) {}
 
-  getData(aluno: AlunoModel) {
+  async getData(aluno: AlunoModel) {
     const idProfessor = localStorage.getItem('data-p');
     if (idProfessor) {
-      this.db
-        .ref('DiasTreino')
-        .child(idProfessor)
-        .child(aluno.id)
-        .once('value', (snapshot) => {
-          const data = snapshot.val();
-          this.bsDiasTreino.next([]);
-          if (data) {
-            const array = Object.keys(data).map((index) => data[index]);
+      try {
+        const snapshot = await this.db
+          .ref('DiasTreino')
+          .child(idProfessor)
+          .child(aluno.id)
+          .once('value');
 
-            // Função de comparação para os dias da semana
-            const diasSemana = [
-              'Segunda',
-              'Terça',
-              'Quarta',
-              'Quinta',
-              'Sexta',
-              'Sábado',
-              'Domingo',
-            ];
-            array.sort((a, b) => {
-              return diasSemana.indexOf(a.dia) - diasSemana.indexOf(b.dia);
-            });
+        const data = snapshot.val();
+        this.bsDiasTreino.next([]);
 
-            this.bsDiasTreino.next(array);
-          }
-        });
+        if (data) {
+          const array = Object.keys(data).map((key) => data[key]);
+
+          // Função de comparação para os dias da semana
+          const diasSemana = [
+            'Segunda',
+            'Terça',
+            'Quarta',
+            'Quinta',
+            'Sexta',
+            'Sábado',
+            'Domingo',
+          ];
+
+          array.sort((a, b) => {
+            return diasSemana.indexOf(a.dia) - diasSemana.indexOf(b.dia);
+          });
+
+          this.bsDiasTreino.next(array);
+        } else {
+          console.warn('Nenhum dado encontrado para Dias de Treino.');
+        }
+      } catch (error) {
+        console.error('Erro ao obter dados de Dias de Treino:', error);
+      }
+    } else {
+      console.warn('ID do professor não encontrado no localStorage.');
     }
   }
 }
