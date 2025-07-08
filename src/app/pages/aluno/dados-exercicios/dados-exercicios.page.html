@@ -32,6 +32,12 @@
         <p>Repetições: {{ exercicio.repeticoes }}</p>
         <p>Obs: {{ exercicio.obs }}</p>
       </ion-label>
+      <br/>
+      <ion-card-title>Exemplo</ion-card-title>
+      <br/>
+      <div class="box-gif">
+        <img [lazyLoad]="exercicio.gif">
+      </div>
     </ion-card-content>
   </ion-card>
   <br />

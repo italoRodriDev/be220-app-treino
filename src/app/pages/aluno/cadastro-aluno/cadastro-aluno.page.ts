@@ -51,7 +51,7 @@ export class CadastroAlunoPage implements OnInit {
   }
 
   ngOnDestroy() {
-    this.subscriptions.unsubscribe(); 
+    this.subscriptions.unsubscribe();
   }
 
   getDataService() {
@@ -195,8 +195,7 @@ export class CadastroAlunoPage implements OnInit {
   }
 
   onClickCopyCode() {
-    const url = 'https://cyber-pump.web.app';
-    //const url = 'http://localhost:8100';
+    const url = window.location.origin; // Pega só o domínio, sem rota
     this.fireAuth.currentUser.then((user) => {
       if (user?.uid) {
         const idAluno = this.aluno?.id;

@@ -355,6 +355,7 @@ export class FormService {
     series: this.reqValidator,
     repeticoes: this.reqValidator,
     obs: [],
+    gif: []
   });
 
   constructor(private fb: FormBuilder) {

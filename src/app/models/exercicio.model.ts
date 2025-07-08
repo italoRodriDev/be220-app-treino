@@ -7,4 +7,5 @@ export interface ExercicioModel {
   series: string;
   repeticoes: string;
   obs: string;
+  gif: string;
 }

@@ -23,6 +23,7 @@ export class CadastroExerciciosPage implements OnInit {
   listDiaTreino: Array<any> = this.formService.listDiasSemana;
   listDoencasCronicas: Array<any> = this.formService.listDoencasCronicas;
   listEnfase: Array<any> = this.formService.listEnfaseMusculos;
+  gifList: string[] = [];
   blockEdit: boolean = false;
 
   private subscriptions: Subscription = new Subscription();
@@ -40,11 +41,22 @@ export class CadastroExerciciosPage implements OnInit {
   }
 
   ionViewDidEnter() {
+    this.getGifs();
     this.getDataService();
   }
 
   ngOnDestroy() {
-    this.subscriptions.unsubscribe(); 
+    this.subscriptions.unsubscribe();
+  }
+
+  getGifs() {
+    const basePath = 'assets/gifs/';
+    const totalGifs = 354; // de 0 a 353
+
+    for (let i = 0; i < totalGifs; i++) {
+      this.gifList.push(`${basePath}im_ex${i}.gif`);
+    }
+    this.removeGif();
   }
 
   getDataService() {
@@ -97,5 +109,13 @@ export class CadastroExerciciosPage implements OnInit {
 
   onClickBack() {
     this.navCtrl.back();
+  }
+
+  onClickGif(gif: string) {
+    this.form.patchValue({ gif: gif });
+  }
+
+  removeGif() {
+    this.form.patchValue({ gif: '' });
   }
 }

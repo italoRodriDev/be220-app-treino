@@ -8,6 +8,7 @@ import { DadosExerciciosPageRoutingModule } from './dados-exercicios-routing.mod
 
 import { DadosExerciciosPage } from './dados-exercicios.page';
 import { SharedComponentsModule } from 'src/app/components/shared-components.module';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { SharedComponentsModule } from 'src/app/components/shared-components.mod
     DadosExerciciosPageRoutingModule,
     ReactiveFormsModule,
     SharedComponentsModule,
+    LazyLoadImageModule,
   ],
   declarations: [DadosExerciciosPage],
 })

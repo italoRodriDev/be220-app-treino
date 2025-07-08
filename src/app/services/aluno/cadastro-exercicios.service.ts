@@ -83,7 +83,7 @@ export class CadastroExerciciosService {
           .child(diaTreino.id)
           .child(id)
           .update(this.formExercicio.value);
-        
+
         this.formService.resetDataForm();
         this.alertService.showAlert(
           'Salvo com sucesso!',
@@ -115,7 +115,7 @@ export class CadastroExerciciosService {
         {
           text: 'Excluir',
           handler: () => {
-            this.remove(exercicio.id, aluno);
+            this.remove(exercicio.id, aluno, diaTreino);
           },
         },
       ],
@@ -123,7 +123,7 @@ export class CadastroExerciciosService {
     alert.present();
   }
 
-  async remove(id: string, aluno: AlunoModel) {
+  async remove(id: string, aluno: AlunoModel, diaTreino: DiaTreinoModel) {
     const user = await this.fireAuth.currentUser;
     if (user?.uid) {
       try {
@@ -131,9 +131,15 @@ export class CadastroExerciciosService {
           .ref('Exercicios')
           .child(user.uid)
           .child(aluno.id)
+          .child(diaTreino.id)
           .child(id)
-          .remove();
-        this.alertService.showToast('Excluído com sucesso!');
+          .remove()
+          .then(() => {
+            this.alertService.showToast('Excluído com sucesso!');
+          }).catch((error) => {
+            this.alertService.showToast('Erro, tente mais tarde!');
+            console.log(error);
+          })
       } catch (error: any) {
         this.alertService.showToast('Erro: ' + error?.code);
       }

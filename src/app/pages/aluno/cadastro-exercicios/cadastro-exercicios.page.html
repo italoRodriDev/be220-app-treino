@@ -2,9 +2,16 @@
   <ion-toolbar color="primary">
     <ion-buttons>
       <ion-button (click)="onClickBack()">
-        <ion-icon slot="icon-only" name="arrow-back-outline" color="light"></ion-icon>
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline"
+          color="light"
+        ></ion-icon>
       </ion-button>
-      <ion-title color="light">{{ aluno != null && diaTreino != null ? 'Exercícios' : 'Novo exercício' }}</ion-title>
+      <ion-title color="light"
+        >{{ aluno != null && diaTreino != null ? 'Exercícios' : 'Novo exercício'
+        }}</ion-title
+      >
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -30,8 +37,15 @@
         <p>Ênfase: {{ exercicio.enfase }}</p>
         <p>Séries: {{ exercicio.series }}</p>
         <p>Repetições: {{ exercicio.repeticoes }}</p>
-        <p>Observações: {{ (exercicio.obs.length ? exercicio.obs : 'Nenhuma') }}</p>
+        <p>
+          Observações: {{ (exercicio.obs.length ? exercicio.obs : 'Nenhuma') }}
+        </p>
       </ion-label>
+      <br/>
+      <ion-card-title>Exemplo</ion-card-title>
+      <div class="box-gif">
+        <img [lazyLoad]="exercicio.gif">
+      </div>
     </ion-card-content>
     <ion-card-content>
       <ion-button
@@ -107,6 +121,39 @@
           ></ion-textarea>
         </ion-item>
         <br />
+        <div *ngIf="form.controls['gif']?.value != '' ">
+          <ion-item>
+            <ion-label>Exemplo do exercício</ion-label>
+            <ion-button color="primary" slot="end" (click)="removeGif()">
+              <ion-label color="light">Alterar</ion-label>
+            </ion-button>
+          </ion-item>
+          <ion-card color="light">
+            <img [src]="form.controls['gif']?.value" />
+          </ion-card>
+        </div>
+        <div *ngIf="form.controls['gif']?.value == '' ">
+          <ion-label>Escolha um exemplo (Opcional)</ion-label>
+          <br />
+          <div class="box-gifs">
+            <ion-radio-group>
+              <ion-grid>
+                <ion-row>
+                  <ion-col
+                    size="6"
+                    size-md="4"
+                    size-lg="3"
+                    *ngFor="let gif of gifList"
+                  >
+                    <ion-card color="light" (click)="onClickGif(gif)">
+                      <img [lazyLoad]="gif" />
+                    </ion-card>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-radio-group>
+          </div>
+        </div>
       </form>
     </ion-card-content>
     <ion-card-content>

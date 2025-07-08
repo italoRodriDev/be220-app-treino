@@ -8,6 +8,7 @@ import { CadastroExerciciosPageRoutingModule } from './cadastro-exercicios-routi
 
 import { CadastroExerciciosPage } from './cadastro-exercicios.page';
 import { SharedComponentsModule } from 'src/app/components/shared-components.module';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { SharedComponentsModule } from 'src/app/components/shared-components.mod
     IonicModule,
     CadastroExerciciosPageRoutingModule,
     ReactiveFormsModule,
+    LazyLoadImageModule,
     SharedComponentsModule
   ],
   declarations: [CadastroExerciciosPage]
