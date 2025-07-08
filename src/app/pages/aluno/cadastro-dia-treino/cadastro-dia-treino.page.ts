@@ -51,6 +51,7 @@ export class CadastroDiaTreinoPage implements OnInit {
     const alunoSubscription = this.cadastroAlunoService.aluno.subscribe(
       (data) => {
         if (data) {
+          console.log(data);
           this.aluno = data;
           this.loadExercicios(); // Carrega os exercícios quando o aluno é atualizado
         }
