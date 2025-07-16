@@ -94,4 +94,11 @@ export class HomePage implements OnInit {
   private signOut() {
     this.authService.signOutAccount();
   }
+
+  onClickContact() {
+    window.open(
+      'https://wa.me/5583986409821?text=Ol%C3%A1%20Vanderson%2C%20Peguei%20seu%20contato%20no%20site.',
+      '__blank'
+    );
+  }
 }

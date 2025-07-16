@@ -1,0 +1,21 @@
+<div class="container">
+  <swiper-container
+    [slidesPerView]="isMobile ? 1.2 : 4.2"
+    [spaceBetween]="3"
+    [config]="swiperOptions"
+  >
+    <swiper-slide *ngFor="let item of list">
+      <div class="card">
+        <img
+          class="background"
+          [lazyLoad]="'assets/images/vanderson/' + item"
+          defaultImage="assets/images/vanderson/IMG_5619.webp"
+        />
+        <div class="overlay"></div>
+        <div class="content">
+          <h1 class="title">{{ item?.titulo }}</h1>
+        </div>
+      </div>
+    </swiper-slide>
+  </swiper-container>
+</div>

@@ -9,7 +9,7 @@
       <ion-label>Novo aluno</ion-label>
       <ion-icon slot="end" name="person-add-outline" color="light"></ion-icon>
     </ion-item>
-    <ion-item>
+    <ion-item (click)="onClickContact()">
       <ion-label>Contato</ion-label>
       <ion-icon slot="end" name="call-outline" color="light"></ion-icon>
     </ion-item>
@@ -67,7 +67,7 @@
           </ion-avatar>
           <ion-label>
             <p class="name-user">
-              {{ (professor?.name!.length > 15 ?
+              {{ (professor.name!.length > 15 ?
               professor.name!.toString().substring(0, 15).toString()+'...' :
               professor.name ) }}
             </p>
@@ -100,7 +100,7 @@
       </ion-item-divider>
       <app-swiper-personal-online
         [enableBtnInit]="true"
-        [titleBtnInit]="'Novo Treino'"
+        [titleBtnInit]="'Novo Aluno'"
         [list]="listAlunos"
         (clickInitBtn)="onClickNew()"
         (clickItem)="onClickEdit($event)"

@@ -1,0 +1,23 @@
+<div class="container">
+  <swiper-container
+    #swiper
+    [slidesPerView]="isMobile ? 1.2 : 4.2"
+    [spaceBetween]="3"
+  >
+    <swiper-slide *ngFor="let item of list">
+      <div class="card">
+        <img
+          class="background"
+          [lazyLoad]="'assets/images/atletas/' + item.img"
+          *ngIf="item.img"
+        />
+        <div class="overlay"></div>
+        <div class="content">
+          <h2 class="name">{{ item.name }}</h2>
+          <p class="text">{{ item.text }}</p>
+          <p class="site" *ngIf="item.site">{{ item.site }}</p>
+        </div>
+      </div>
+    </swiper-slide>
+  </swiper-container>
+</div>

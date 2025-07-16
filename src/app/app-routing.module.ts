@@ -9,7 +9,7 @@ const userNotAuthorized = () => redirectUnauthorizedTo(['login']);
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'intro',
+    redirectTo: 'bem-vindo',
     pathMatch: 'full',
   },
   {
@@ -96,6 +96,11 @@ const routes: Routes = [
     canActivate: [AngularFireAuthGuard],
     data: { userNotAuthorized },
   },
+  {
+    path: 'bem-vindo',
+    loadChildren: () => import('./pages/bem-vindo/bem-vindo.module').then( m => m.BemVindoPageModule)
+  },
+
 ];
 
 @NgModule({

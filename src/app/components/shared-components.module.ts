@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { register } from 'swiper/element/bundle';
-import { AnimationListComponent } from './utils/animation-list/animation-list.component';
+import { SwiperFotosComponent } from './bem-vindo/swiper-fotos/swiper-fotos.component';
+import { SwiperSalaTrofeusComponent } from './bem-vindo/swiper-sala-trofeus/swiper-sala-trofeus.component';
 import { SwiperConteudosComponent } from './home/swiper-conteudos/swiper-conteudos.component';
 import { SwiperPersonalOnlineComponent } from './home/swiper-personal-online/swiper-personal-online.component';
 import { SwiperProgramasComponent } from './home/swiper-programas/swiper-programas.component';
+import { AnimationListComponent } from './utils/animation-list/animation-list.component';
 import { SkeletonListComponent } from './utils/skeleton-list/skeleton-list.component';
 
 register();
@@ -16,7 +18,9 @@ register();
     AnimationListComponent,
     SwiperPersonalOnlineComponent,
     SwiperProgramasComponent,
-    SwiperConteudosComponent
+    SwiperConteudosComponent,
+    SwiperFotosComponent,
+    SwiperSalaTrofeusComponent,
   ],
   imports: [CommonModule, LazyLoadImageModule],
   exports: [
@@ -24,7 +28,9 @@ register();
     AnimationListComponent,
     SwiperPersonalOnlineComponent,
     SwiperProgramasComponent,
-    SwiperConteudosComponent
+    SwiperConteudosComponent,
+    SwiperFotosComponent,
+    SwiperSalaTrofeusComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

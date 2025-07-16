@@ -1,0 +1,97 @@
+<ion-content [fullscreen]="true" color="light">
+  <div class="home-container">
+    <img src="assets/images/logo_white.jpg" />
+
+    <h1 class="title">
+      Nutricionista <br />
+      Vanderson Luz
+    </h1>
+
+    <div class="carousel-wrapper">
+      <app-swiper-fotos
+        [enableBtnInit]="true"
+        [titleBtnInit]="'Novo Aluno'"
+        [list]="images"
+      ></app-swiper-fotos>
+      <div class="carousel-text">
+        Nutrição personalizada para saúde e performance
+      </div>
+    </div>
+
+    <div class="box-buttons">
+      <ion-button
+        (click)="onClickContact()"
+        expand="block"
+        shape="round"
+        color="primary"
+        class="schedule-button"
+      >
+        <ion-icon slot="start" name="logo-whatsapp" color="light"></ion-icon>
+        <ion-label color="light">Agendar consulta</ion-label>
+      </ion-button>
+      <ion-button
+        (click)="onClickCreateTraining()"
+        expand="block"
+        shape="round"
+        color="primary"
+        class="schedule-button"
+      >
+        <ion-icon
+          slot="start"
+          name="analytics-outline"
+          color="light"
+        ></ion-icon>
+        <ion-label color="light">Crie seu treino</ion-label>
+      </ion-button>
+    </div>
+
+    <div class="content-section">
+      <h2>Um pouco sobre meu trabalho</h2>
+      <p>
+        Muito prazer, sou Vanderson Luz, nutricionista com especialização em
+        nutrição clínica e esportiva. Minha história com a nutrição começou na
+        prática — sou ex-obeso e vivi na pele os desafios da mudança de estilo
+        de vida. Com formação sólida e mais de 1.000 pacientes atendidos em 5
+        países, hoje ajudo pessoas a alcançarem saúde, equilíbrio e performance
+        de forma personalizada e sustentável. Meu foco é cuidar do corpo, mas
+        sem esquecer da mente e da rotina de cada um.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <h2 class="title">Sala de Troféus</h2>
+      <p>Veja as conquistas do nosso time, faça parte você também!</p>
+    </div>
+
+    <app-swiper-sala-trofeus [list]="champions"></app-swiper-sala-trofeus>
+
+    <div class="content-section">
+      <h2 class="title">Venha fazer parte do time de atletas que mais cresce!</h2>
+      <p>Entre em contato agora e agende sua consulta.</p>
+      <ion-button
+        (click)="onClickContact()"
+        expand="block"
+        shape="round"
+        color="primary"
+        class="schedule-button"
+      >
+        <ion-icon slot="start" name="logo-whatsapp" color="light"></ion-icon>
+        <ion-label color="light">Agendar consulta</ion-label>
+      </ion-button>
+    </div>
+
+    <div class="address-section">
+      <h2>Endereço</h2>
+      <p>
+        Rua Diva Costa da Silva, 77 - Mangabeira, João Pessoa, PB<br />
+        Ao lado da padaria shammah. No consultório Luz Estética e beleza.<br />
+        OBS: o número do consultório é 191B. Porém, colocar no GPS o número 77
+      </p>
+      <h2>Telefone</h2>
+      <p>(83) 98640-9821</p>
+    </div>
+    <div class="dev-section">
+      <p>Desenvolvido por Italo Rodri. Dev mobile.</p>
+    </div>
+  </div>
+</ion-content>
