@@ -57,12 +57,12 @@
   --ion-color-medium-shade: #c9c9c9;
   --ion-color-medium-tint: #e7e7e7;
 
-  --ion-color-dark: #2f2f2f;
-  --ion-color-dark-rgb: 47, 47, 47;
+  --ion-color-dark: #000000;
+  --ion-color-dark-rgb: 0, 0, 0;
   --ion-color-dark-contrast: #ffffff;
   --ion-color-dark-contrast-rgb: 255, 255, 255;
-  --ion-color-dark-shade: #292929;
-  --ion-color-dark-tint: #444444;
+  --ion-color-dark-shade: #0d0d0d; /* Levemente mais escuro que preto real */
+  --ion-color-dark-tint: #1a1a1a;
 
   --jost: "Jost";
   --manrope: "Manrope";

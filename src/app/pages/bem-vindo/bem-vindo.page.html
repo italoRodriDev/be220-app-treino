@@ -1,4 +1,4 @@
-<ion-content [fullscreen]="true" color="light">
+<ion-content [fullscreen]="true" color="light" mode="md">
   <div class="home-container">
     <img src="assets/images/logo_white.jpg" />
 
@@ -59,14 +59,28 @@
     </div>
 
     <div class="content-section">
+      <img class="trofeu" src="../../../assets/svg/trofeu.png">
       <h2 class="title">Sala de Troféus</h2>
       <p>Veja as conquistas do nosso time, faça parte você também!</p>
     </div>
 
-    <app-swiper-sala-trofeus [list]="champions"></app-swiper-sala-trofeus>
+    <h2 class="title"> FISICULTURISMO</h2>
+    <app-swiper-sala-trofeus [list]="fisiculturismo"></app-swiper-sala-trofeus>
+    <div class="divider"></div>
+    <h2 class="title">ARTES MARCIAIS</h2>
+    <app-swiper-sala-trofeus [list]="bjj"></app-swiper-sala-trofeus>
+    <div class="divider"></div>
+    <h2 class="title">CORRIDA</h2>
+    <app-swiper-sala-trofeus [list]="corrida"></app-swiper-sala-trofeus>
+    <div class="divider"></div>
+    <h2 class="title">VÔLEI DE PRAIA</h2>
+    <app-swiper-sala-trofeus [list]="voleiPraia"></app-swiper-sala-trofeus>
+    <div class="divider"></div>
 
     <div class="content-section">
-      <h2 class="title">Venha fazer parte do time de atletas que mais cresce!</h2>
+      <h2 class="title">
+        Venha fazer parte do time de atletas que mais cresce!
+      </h2>
       <p>Entre em contato agora e agende sua consulta.</p>
       <ion-button
         (click)="onClickContact()"

@@ -58,6 +58,10 @@
   padding: 30px;
   text-align: center;
 
+  .trofeu {
+    width: 120px;
+  }
+
   h2 {
     font-size: 28px;
     font-weight: 600;
@@ -83,4 +87,10 @@
   p {
     margin-top: 8px;
   }
+}
+
+.divider {
+  border-bottom: 1px solid var(--medium);
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
