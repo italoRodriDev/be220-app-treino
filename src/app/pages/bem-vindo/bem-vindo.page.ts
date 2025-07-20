@@ -24,7 +24,7 @@ export class BemVindoPage implements OnInit {
   }> = [
     {
       name: 'Marizete Oliveira',
-      text: 'Campeã JAMPA LEGENDS',
+      text: 'Campeã JAMPA LEGENDS Categoria Wellness Master',
       img: 'IMG_8530.jpg',
       site: '@marioliveira9502',
     },
